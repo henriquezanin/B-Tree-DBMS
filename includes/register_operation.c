@@ -44,7 +44,7 @@ long writeAllFieldsOnFile(Metadata *metadata, Data **data){
     enum dataType type;
     Errors err;
 
-    //Store key
+    /* Store key */
     type = getDataType(metadata->key.type);
     err = writeOneFieldOnFile(metadata->fpRegister, type, data[0], 1);
     raiseError(err);

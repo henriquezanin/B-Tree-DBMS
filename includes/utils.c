@@ -65,7 +65,7 @@ void raiseError(Errors error){
 }
 
 
-//Only for test
+/* Only for test */
 void printData(Metadata *metadata, Data **data){
     enum dataType type;
     int i;

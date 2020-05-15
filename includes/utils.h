@@ -4,7 +4,7 @@
 #define BOOL unsigned char
 #define TRUE 1
 #define FALSE 0
-//End of line
+/* End of line */
 #define EOL "\n\r"
 
 typedef union Data{

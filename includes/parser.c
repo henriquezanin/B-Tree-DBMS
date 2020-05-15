@@ -217,7 +217,7 @@ char **extractFields(char *query,char queryDelimiter,char stringDelimiter){
     char *start = query, *end;
 
     while((end = strchr(start,queryDelimiter))){
-        //Ignore query delimiter in quoted string with stringDelimiter
+        /* Ignore query delimiter in quoted string with stringDelimiter */
         if(start[0] == stringDelimiter){
             end = strchr(&start[1],stringDelimiter);
             end += 1;
@@ -229,7 +229,7 @@ char **extractFields(char *query,char queryDelimiter,char stringDelimiter){
         numberOfFields++;
         start = end+1;
     }
-    //Takes last field that's haven't a delimiter at end
+    /* Takes last field that's haven't a delimiter at end */
     if(strlen(start)){
         aux = (char*)calloc(strlen(start)+1,sizeof(char));
         strncpy(aux,start,strlen(start));

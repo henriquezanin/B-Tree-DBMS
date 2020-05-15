@@ -7,7 +7,7 @@
 #include <register_operations.h>
 
 
-//Main function to insert register. B-tree implementation needs to be here.
+/* Main function to insert register. B-tree implementation needs to be here. */
 Errors insertQuery(Metadata *metadata, char *queryData){
     Errors error;
     /*

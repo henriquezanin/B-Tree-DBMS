@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <utils.h>
 
-//Separator of metadata parameter
+/* Separator of metadata parameter */
 #define METADATA_PARAMETER_SEP ':'
 #define FIELD_DELIMITER ','
 #define STRING_DELIMITER '\"'
