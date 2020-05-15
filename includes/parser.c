@@ -262,7 +262,7 @@ Data *convertStringToData(char *field, enum dataType type, int size){
         data->Float = atof(field);
         break;
     case Double:
-        data->Double = atol(field);
+        data->Double = atof(field);
         break;
     case Char:
         aux = (char*)calloc(size,sizeof(char));
