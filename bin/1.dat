@@ -1,0 +1,16 @@
+//Isso é um comentário válido, sua leitura não será considerada
+//Espaços em branco também serão ignorados
+
+filename: registros.reg
+
+key-name: codigo
+key-type: int
+
+field-name: nome
+field-type: char[20]
+
+field-name: idade
+field-type: int
+
+field-name: bolsa
+field-type: double
