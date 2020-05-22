@@ -3,5 +3,6 @@
 
 
 PrimaryIndex *storeData(Metadata *, char *);
+void printByRRN(Metadata *, long);
 
 #endif

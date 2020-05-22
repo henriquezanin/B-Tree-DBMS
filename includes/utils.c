@@ -73,10 +73,11 @@ void printData(Metadata *metadata, Data **data){
     printf("%d\n", data[0]->Int);
 
     for(i=0;i<metadata->fieldCounter;i++){
-        type = getDataType(metadata->fields[i].type);
+        type = metadata->fields[i].type;
         if(type == Int) printf("%d\n", data[i+1]->Int);
         else if(type == Float) printf("%f\n", data[i+1]->Float);
         else if(type == Double) printf("%lf\n", data[i+1]->Double);
         else if(type == Char) printf("%s\n", data[i+1]->CharArray);
     }
+    printf("\n");
 }

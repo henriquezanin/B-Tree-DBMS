@@ -103,8 +103,10 @@ void loadKeyIntoMetadata(Metadata *metadata, char *fullParameter){
     char *parameter = extractParameter(fullParameter, METADATA_PARAMETER_SEP);
     char *parameterValue = extractParameterValue(fullParameter, METADATA_PARAMETER_SEP);
     enum ParameterType type = getParameterType(parameter);
-    if(type == Name) strcpy(metadata->key.description,parameterValue);
-    else strcpy(metadata->key.type, parameterValue);
+    if(type == Name)
+        strcpy(metadata->key.description,parameterValue);
+    else
+        metadata->key.type = getDataType(parameterValue);
     metadata->key.lenght = 1;
 }
 
@@ -126,15 +128,11 @@ unsigned int getCharTypeSize(char *parameterValue){
 }
 
 void setDataTypeInMetadata(metadataField *field, char *parameterValue){
-    enum dataType dataType = getDataType(parameterValue);
-    if(dataType != Char){
-        strcpy(field->type, removeSpaces(parameterValue));
+    field->type = getDataType(parameterValue);
+    if(field->type != Char)
         field->lenght = 1;
-    }
-    else{
-        strcpy(field->type,"char");
+    else
         field->lenght = getCharTypeSize(parameterValue);
-    }
 }
 
 void loadFieldIntoMetadata(Metadata *metadata, char *fullParameter){
@@ -190,13 +188,18 @@ Metadata *parseMetadataFile(TextDocument *document){
 void calcRegisterSize(Metadata *metadata){
     int i;
 
-    if(!strcmp(metadata->key.type, "int")) metadata->registerSize += sizeof(int);
+    if(metadata->key.type == Int)
+        metadata->registerSize += sizeof(int);
     
     for(i=0;i<metadata->fieldCounter;i++){
-        if(!strcmp(metadata->fields[i].type, "int")) metadata->registerSize += sizeof(int);
-        if(!strcmp(metadata->fields[i].type, "float")) metadata->registerSize += sizeof(float);
-        if(!strcmp(metadata->fields[i].type, "double")) metadata->registerSize += sizeof(double);
-        if(!strcmp(metadata->fields[i].type, "char")) metadata->registerSize += metadata->fields[i].lenght;
+        if(metadata->fields[i].type == Int)
+            metadata->registerSize += sizeof(int);
+        else if(metadata->fields[i].type == Float)
+            metadata->registerSize += sizeof(float);
+        if(metadata->fields[i].type == Double)
+            metadata->registerSize += sizeof(double);
+        if(metadata->fields[i].type == Char)
+            metadata->registerSize += metadata->fields[i].lenght;
     }
 
 }
@@ -282,12 +285,12 @@ Data **parseInsertQueryData(Metadata *metadata, char *query){
     Data **data = (Data**)malloc((metadata->fieldCounter+1)*sizeof(Data*));
     char **fields = extractFields(query, FIELD_DELIMITER, STRING_DELIMITER);
 
-    type = getDataType(metadata->key.type);
+    type = metadata->key.type;
     data[0] = convertStringToData(fields[0],type, metadata->key.lenght);
 
     for(i=0;i<metadata->fieldCounter;i++){
         fields[i+1] = removeQuotesInString(fields[i+1]);
-        type = getDataType(metadata->fields[i].type);
+        type = metadata->fields[i].type;
         data[i+1] = convertStringToData(fields[i+1], type, metadata->fields[i].lenght);
     }
 

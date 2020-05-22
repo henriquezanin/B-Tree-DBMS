@@ -7,6 +7,8 @@
 /* End of line */
 #define EOL "\n\r"
 
+enum dataType{Int,Float,Double,Char};
+
 typedef union Data{
     int Int;
     float Float;
@@ -21,9 +23,8 @@ typedef struct index{
 
 typedef struct metadataField{
     char description[30];
-    char type[20];
+    enum dataType type;
     unsigned char lenght;
-
 }metadataField;
 
 typedef struct metadata{
@@ -44,8 +45,7 @@ typedef enum errors{
     INVALID_QUERY
 }Errors;
 
-enum dataType{Int,Float,Double,Char};
-enum operationType{insert, search};
+enum operationType{insert, search, rrn};
 
 typedef struct textDocument{
     int numberOfLines;

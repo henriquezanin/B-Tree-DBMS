@@ -11,12 +11,12 @@ int main(int argc, char *argv[]){
     Errors err;
     int i;
 
-    printf("Key name: %s\tKey Type:%s\tSize: %d\n", metadata->key.description, metadata->key.type, metadata->key.lenght);
+    printf("Key name: %s\tKey Type:%d\tSize: %d\n", metadata->key.description, metadata->key.type, metadata->key.lenght);
 
     for(i=0;i<metadata->fieldCounter;i++){
-        printf("Description: %s\tType:%s\tSize: %d\n",metadata->fields[i].description ,metadata->fields[i].type, metadata->fields[i].lenght);
+        printf("Description: %s\tType:%d\tSize: %d\n",metadata->fields[i].description ,metadata->fields[i].type, metadata->fields[i].lenght);
     }
-    printf("Register Size: %d\n", metadata->registerSize);
+    printf("Register Size: %d\n\n", metadata->registerSize);
 
     while(!feof(stdin)){
         char *line = readLine(stdin);

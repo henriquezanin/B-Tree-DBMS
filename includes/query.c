@@ -4,7 +4,7 @@
 #include <utils.h>
 #include <parser.h>
 #include <query.h>
-#include <register_operations.h>
+#include <pager.h>
 
 
 /* Main function to insert register. B-tree implementation needs to be here. */
@@ -18,7 +18,7 @@ Errors insertQuery(Metadata *metadata, char *queryData){
     PrimaryIndex *index = storeData(metadata, queryData);
     if(!index) error = NULL_METADATA;
 
-    printf("Key:%d\tRRN: %ld\n", index->key, index->RRN);
+    /*printf("Key:%d\tRRN: %ld\n", index->key, index->RRN);*/
 
     return error;
 }
@@ -35,11 +35,16 @@ Errors evalQuery(Metadata *metadata, char *fullQuery){
     if(!strcmp(queryType, "insert")){
         err = insertQuery(metadata, queryData);
         if(!err) return err;
-        puts("INSERT");
+        /*puts("INSERT");*/
         return SUCCESS;
     }
     else if(!strcmp(queryType, "search")){
-        puts("SEARCH");
+        /*puts("SEARCH");*/
+        return SUCCESS;
+    }
+    else if(!strcmp(queryType, "rrn")){
+        /*puts("rrn");*/
+        printByRRN(metadata, atol(queryData));
         return SUCCESS;
     }
     else if(!strcmp(queryType, "exit")){
