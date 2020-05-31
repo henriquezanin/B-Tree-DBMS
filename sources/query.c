@@ -106,7 +106,8 @@ Errors evalQuery(Metadata **metadata, char *fullQuery){
         err = EXIT;
         break;
     case showHelp:
-        /*SHOW HELP TEXT*/
+        buildHelpMenu();
+        runHelp();
         break;
     default:
     err = INVALID_QUERY;

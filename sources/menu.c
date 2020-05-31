@@ -37,3 +37,12 @@ void commandLine(){
         }
     }
 }
+
+void buildHelpMenu() {
+    printf("***\n");
+    printf("Available commands:\n");
+    printf("Insert, search, rrn, table, exit\n");
+    printf("Insert:\n");
+    printf("()");
+    printf("***\n");
+}
