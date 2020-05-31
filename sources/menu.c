@@ -21,7 +21,8 @@ void commandLine(){
         switch (err){
         case EXIT:
             if(metadata){
-                fclose(metadata->fpRegister);
+                if(metadata->fpRegister)
+                    fclose(metadata->fpRegister);
                 metadata->fpRegister = NULL;
                 freeMetadata(metadata);
             }
