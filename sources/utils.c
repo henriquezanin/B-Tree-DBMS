@@ -61,9 +61,17 @@ void raiseError(Errors error){
     else if(error == NULL_METADATA) printf("NULL Metadata in function argument!\n");
     else if(error == EMPTY_QUERY) printf("Empty query in function argument!\n");
     else if(error == INVALID_QUERY) printf("Invalid query!\n");
-
+    else if(error == INVALID_RRN_PAGE){ 
+        printf("Invalid RRN page!\n");
+        exit(0);
+    }
+    else if(error == EMPTY_PAGE) printf("Empty page on B-Tree!\n");
 }
 
+void freeMetadata(Metadata *metadata){
+    free(metadata->fields);
+    free(metadata);
+}
 
 /* Only for test */
 void printData(Metadata *metadata, Data **data){
@@ -80,4 +88,16 @@ void printData(Metadata *metadata, Data **data){
         else if(type == Char) printf("%s\n", data[i+1]->CharArray);
     }
     printf("\n");
+}
+
+Errors printMetadata(Metadata *metadata){
+    if(!metadata) return NULL_METADATA;
+    int i;
+    printf("Key name: %s\tKey Type:%d\tSize: %d\n", metadata->key.description, metadata->key.type, metadata->key.lenght);
+
+    for(i=0;i<metadata->fieldCounter;i++){
+        printf("Description: %s\tType:%d\tSize: %d\n",metadata->fields[i].description ,metadata->fields[i].type, metadata->fields[i].lenght);
+    }
+    printf("Register Size: %d\n\n", metadata->registerSize);
+    return SUCCESS;
 }

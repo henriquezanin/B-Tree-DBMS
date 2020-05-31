@@ -1,4 +1,5 @@
 #ifndef __UTILS__
+#include <stdio.h>
 #define __UTILS__
 
 #define BOOL unsigned char
@@ -38,14 +39,17 @@ typedef struct metadata{
 
 typedef enum errors{
     SUCCESS,
+    EXIT,
     NULL_METADATA,
     EMPTY_QUERY,
+    EMPTY_PAGE,
     UNABLE_TO_WRITE_DATA,
     INVALID_DATA_TYPE,
-    INVALID_QUERY
+    INVALID_QUERY,
+    INVALID_RRN_PAGE,
+    INVALID_FILE_POINTER
 }Errors;
 
-enum operationType{insert, search, rrn};
 
 typedef struct textDocument{
     int numberOfLines;
@@ -59,5 +63,7 @@ FILE *openOrCreateFile(char *);
 enum dataType getDataType(char *);
 void printData(Metadata *, Data **);
 void raiseError(Errors);
+void freeMetadata(Metadata *);
+Errors printMetadata(Metadata *);
 
 #endif

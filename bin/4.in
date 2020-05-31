@@ -1,0 +1,10 @@
+4.dat
+insert 100817, "Smartphone Samsung Galaxy S10", 3333.22
+insert 84441, "Mouse Gamer Razer Deathadder Elite", 316.56
+insert 107457, "Placa de Video AMD Radeon Pro WX 2100", 670.47
+insert 99683, "Processador Intel Core i5-9400F", 1235.18
+insert 89133, "Placa PCI-E MD.9 de Rede 10/100/1000", 38.71
+insert 73613, "Switch 16 Portas TP-Link Gigabit 10/100/1000 Mbps Rack/Desk", 344.33
+search 99683
+search 73613
+exit

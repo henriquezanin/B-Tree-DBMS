@@ -6,6 +6,9 @@
 Data *getRegisterFieldFromFile(FILE *, enum dataType, unsigned int);
 
 Data **getRegisterByRRN(Metadata *metadata, long rrn){
+    if(!metadata->fpRegister)
+        metadata->fpRegister = openOrCreateFile(metadata->registerFilename);
+    assertFile(metadata->fpRegister,metadata->registerFilename);
     Data **data = (Data**)malloc((metadata->fieldCounter+1)*sizeof(Data*));
     short int i;
     fseek(metadata->fpRegister, (rrn-1)*metadata->registerSize, SEEK_SET);
@@ -104,9 +107,9 @@ void printByRRN(Metadata *metadata, long rrn){
         if(metadata->fields[i].type == Int)
             printf("%s: %d\n", metadata->fields[i].description, data[i+1]->Int);
         else if(metadata->fields[i].type == Float)
-            printf("%s: %f\n", metadata->fields[i].description, data[i+1]->Float);
+            printf("%s: %.2f\n", metadata->fields[i].description, data[i+1]->Float);
         else if(metadata->fields[i].type == Double)
-            printf("%s: %lf\n", metadata->fields[i].description, data[i+1]->Double);
+            printf("%s: %.2lf\n", metadata->fields[i].description, data[i+1]->Double);
         else if(metadata->fields[i].type == Char)
             printf("%s: %s\n", metadata->fields[i].description, data[i+1]->CharArray);
     }

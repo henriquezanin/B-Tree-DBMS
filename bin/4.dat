@@ -1,0 +1,7 @@
+filename: registros.reg
+key-name: codigo
+key-type: int
+field-name: produto
+field-type: char[80]
+field-name: preco
+field-type: float
