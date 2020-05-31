@@ -246,11 +246,20 @@ char **extractFields(char *query,char queryDelimiter,char stringDelimiter){
 
 char *removeQuotesInString(char *string){
     if(string[0] != STRING_DELIMITER) return string;
+    char *newString = (char*) malloc((strlen(string)-2)*sizeof(char));
     string[strlen(string)-1] = '\0';
+    /*
+
     string = strncpy(string,string+1,strlen(string)-1);
     string[strlen(string)-1] = '\0';
     string = (char*)realloc(string, strlen(string)*sizeof(char));
     return string;
+
+    */
+    strncpy(newString,&string[1],strlen(string)-1);
+
+    free(string);
+    return newString;
 }
 
 Data *convertStringToData(char *field, enum dataType type, int size){
