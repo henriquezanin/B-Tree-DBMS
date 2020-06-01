@@ -6,6 +6,7 @@
 #include <query.h>
 #include <pager.h>
 #include <btree.h>
+#include <menu.h>
 
 enum operationType getOperationFromString(char *command){
     enum operationType operation;
@@ -23,6 +24,8 @@ enum operationType getOperationFromString(char *command){
         operation = exitCommand;
     else if(!strcmp(command, "help"))
         operation = showHelp;
+    else if(!strcmp(command, "man"))
+        operation = man;
     else{
         raiseError(INVALID_QUERY);
         operation = showHelp;
@@ -106,8 +109,10 @@ Errors evalQuery(Metadata **metadata, char *fullQuery){
         err = EXIT;
         break;
     case showHelp:
-        buildHelpMenu();
-        runHelp();
+        buildHelp();
+        break;
+    case man:
+        runManuals();
         break;
     default:
     err = INVALID_QUERY;

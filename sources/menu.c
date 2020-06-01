@@ -14,6 +14,7 @@ void commandLine(){
     char *query;
     Metadata *metadata = NULL;
 
+    printf("Type \"help\" to see all commands\n");
     while (exitFlag == FALSE){
         printCommandLineMenu();
         query = readLine(stdin);
@@ -38,11 +39,14 @@ void commandLine(){
     }
 }
 
-void buildHelpMenu() {
+void buildHelp() {
     printf("***\n");
     printf("Available commands:\n");
-    printf("Insert, search, rrn, table, exit\n");
-    printf("Insert:\n");
-    printf("()");
+    printf("insert, search, rrn, table, exit\n");
+    printf("Type \"man *command*\" to see their manual\n");
     printf("***\n");
+}
+
+void runManuals() {
+    printf("*** Aqui vai aparecer o manual do que o usuario quer ***\n");
 }

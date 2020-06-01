@@ -5,7 +5,7 @@
 
 #define QUERY_SEPARATOR ' '
 
-enum operationType{insert, search, rrn, load, table, exitCommand, showHelp};
+enum operationType{insert, search, rrn, load, table, exitCommand, showHelp, man};
 
 Errors insertQuery(Metadata *, char *);
 Errors evalQuery(Metadata**, char*);
