@@ -109,8 +109,7 @@ Errors evalQuery(Metadata **metadata, char *fullQuery){
         err = EXIT;
         break;
     case showHelp:
-        /*buildHelpMenu();
-        runHelp();*/
+        buildHelp();
         break;
     case man:
         runManuals(queryData);

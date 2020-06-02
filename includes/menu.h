@@ -1,9 +1,23 @@
 #ifndef __BTREEMENU__
 #define __BTREEMENU__
 
+#include <sys/ioctl.h>
+
+struct manInformations {
+    char *name;
+    char *synopsis;
+    char *description;
+    char *exampleHeader;
+    char *exampleText;
+    char *history;
+};
+
+typedef struct manInformations manualInformations;
+
 void commandLine();
 void printCommandLineMenu();
 void buildHelp();
-void runManuals();
+void runManuals(char*);
+void printMan(manualInformations*, struct winsize*);
 
 #endif
