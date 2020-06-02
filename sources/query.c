@@ -112,7 +112,7 @@ Errors evalQuery(Metadata **metadata, char *fullQuery){
         buildHelp();
         break;
     case man:
-        runManuals();
+        runManuals(queryData);
         break;
     default:
     err = INVALID_QUERY;
