@@ -1,4 +1,4 @@
-8.dat
+load 8.dat
 insert 1, "AB+", 49.7, 162, 24, "F", "Camila", "Fernandes"
 insert 2, "A+", 68.7, 186, 25, "M", "Renan", "Ferreira"
 insert 3, "B+", 75.4, 158, 43, "F", "Maria", "Ribeiro"
@@ -1130,5 +1130,4 @@ search 627
 search 728
 search 829
 search 931
-index
 exit

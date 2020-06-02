@@ -17,9 +17,9 @@ void commandLine(){
     char *query;
     Metadata *metadata = NULL;
 
-    printf("Type \"help\" to see all commands\n");
+    /*printf("Type \"help\" to see all commands\n");*/
     while (exitFlag == FALSE){
-        printCommandLineMenu();
+        /*printCommandLineMenu();*/
         query = readLine(stdin);
         err = evalQuery(&metadata, query);
         switch (err){
