@@ -46,12 +46,10 @@ Errors insertQuery(Metadata *metadata, char *queryData){
     PrimaryIndex *index = storeData(metadata, queryData);
     if(!index) error = NULL_METADATA;
 
-    /*TESTE DA B-TREE*/
     FILE *fp = openOrCreateFile("index.dat");
     btPage *root = getRoot(fp);
-    /*printPageNode(root);
-    printf("\n");*/
     raiseError(bTreeInsert(index, root, fp));
+    fclose(fp);
 
     return error;
 }
@@ -67,12 +65,14 @@ int selectQuery(Metadata *metadata, char *queryData){
         return -1;
     }
     printByRRN(metadata, keyRrn);
+    fclose(fp);
     return 0;
 }
 
 Errors loadTable(char *filename, Metadata **metadata){
     if(*metadata){
-        fclose((*metadata)->fpRegister);
+        if((*metadata)->fpRegister)
+            fclose((*metadata)->fpRegister);
         freeMetadata(*metadata);
     }
     *metadata = parseMetadata(filename);
@@ -109,7 +109,8 @@ Errors evalQuery(Metadata **metadata, char *fullQuery){
         err = EXIT;
         break;
     case showHelp:
-        buildHelp();
+        /*buildHelpMenu();
+        runHelp();*/
         break;
     case man:
         runManuals();
