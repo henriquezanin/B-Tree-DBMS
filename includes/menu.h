@@ -14,10 +14,13 @@ struct manInformations {
 
 typedef struct manInformations manualInformations;
 
+void userInterface();
 void commandLine();
 void printCommandLineMenu();
 void buildHelp();
 void runManuals(char*);
 void printMan(manualInformations*, struct winsize*);
+void printEmptyLine(struct winsize*);
+void printText(struct winsize*, char*);
 
 #endif

@@ -6,9 +6,27 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <math.h>
 
 void printCommandLineMenu(){
     printf("db > ");
+}
+
+void userInterface() {
+    struct winsize terminal;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &terminal);
+    int i;
+
+    for (i = 0; i < terminal.ws_col; i++) printf("-");
+    printf("\n");
+
+    int halfSizeOfTerminal = terminal.ws_row/2;
+    for (i = 0; i < halfSizeOfTerminal-2; i++) printEmptyLine(&terminal);
+
+    char *text = "BEM VINDO AO SGB";
+    printText(&terminal, text);
+
+    
 }
 
 void commandLine(){
@@ -45,7 +63,7 @@ void commandLine(){
 void buildHelp() {
     printf("***\n");
     printf("Available commands:\n");
-    printf("insert, search, rrn, table, exit\n");
+    printf("insert, search, rrn, load, table, exit\n");
     printf("Type \"man *command*\" to see their manual\n");
     printf("***\n");
 }
@@ -162,4 +180,33 @@ void printMan(manualInformations *infos, struct winsize *terminal) {
         printf("\t%s\n\n", infos->exampleText);
         printf("HISTORY\n");
         printf("\t%s\n\n", infos->history);
+}
+
+void printEmptyLine(struct winsize *terminal) {
+    int j;
+
+    printf("|");
+    for (j = 0; j < terminal->ws_col-2; j++) {
+        printf(" ");
+    }
+    printf("|\n");
+}
+
+void printText(struct winsize *terminal, char *stringToPrint) {
+    int stringSize = strlen(stringToPrint);
+    int neededLines = 1 + (stringSize/(terminal->ws_col - 4));
+    int i, pos = 0;
+
+    for (i = 0; i < neededLines; i++) {
+        printf("| ");
+        for (i = 0; i < terminal->ws_col-4; i++, pos++) {
+            if (pos < stringSize) printf("%c", stringToPrint[pos]);
+            else printf(" ");
+        }
+        printf(" |\n");
+    }
+    
+    for (i = 0; i < (terminal->ws_row/2)-(neededLines); i++) printEmptyLine(terminal);
+    for (i = 0; i < terminal->ws_col; i++) printf("-");
+
 }
