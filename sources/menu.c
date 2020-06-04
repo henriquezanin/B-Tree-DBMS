@@ -15,17 +15,21 @@ void printCommandLineMenu(){
 void userInterface() {
     struct winsize terminal;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &terminal);
-    int i;
 
-    for (i = 0; i < terminal.ws_col; i++) printf("-");
-    printf("\n");
+    screenContent mainText;
+    
+    mainText.numberOfStrings = 6;
+    mainText.strings = (char**) calloc(6, sizeof(char*));
 
-    int halfSizeOfTerminal = terminal.ws_row/2;
-    for (i = 0; i < halfSizeOfTerminal-2; i++) printEmptyLine(&terminal);
-
-    char *text = "BEM VINDO AO SGB";
-    printText(&terminal, text);
-
+    mainText.strings[0] = "BEM VINDO AO FAST ICMCDB";
+    mainText.strings[1] = "Feito por Henrique Zanin (xxxxxxxx) e Gabriel Marin (11218521)";
+    mainText.strings[2] = "Comandos :";
+    mainText.strings[3] = "1: Inserir";
+    mainText.strings[4] = "2: Buscar";
+    mainText.strings[5] = "3: Carregar arquivo";
+    
+    printMainText(&terminal, &mainText);
+    runtimeInterface(&terminal);
     
 }
 
@@ -192,21 +196,91 @@ void printEmptyLine(struct winsize *terminal) {
     printf("|\n");
 }
 
-void printText(struct winsize *terminal, char *stringToPrint) {
-    int stringSize = strlen(stringToPrint);
-    int neededLines = 1 + (stringSize/(terminal->ws_col - 4));
-    int i, pos = 0;
+void printMainText(struct winsize *terminal, screenContent *content) {
+    int k, stringSize, neededLines, i, pos, linesPrinted = 0;
 
-    for (i = 0; i < neededLines; i++) {
-        printf("| ");
-        for (i = 0; i < terminal->ws_col-4; i++, pos++) {
-            if (pos < stringSize) printf("%c", stringToPrint[pos]);
-            else printf(" ");
+    for (i = 0; i < terminal->ws_col; i++) printf("-");
+    printf("\n");
+
+    int halfSizeOfTerminal = terminal->ws_row/2;
+    for (i = 0; i < halfSizeOfTerminal-4; i++) printEmptyLine(terminal);
+
+    for (k = 0; k < content->numberOfStrings; k++) {
+        stringSize = strlen(content->strings[k]);
+        neededLines = 1 + (stringSize/(terminal->ws_col - 4));
+        pos = 0;
+
+        for (i = 0; i < neededLines; i++) {
+            printf("| ");
+            for (i = 0; i < terminal->ws_col-4; i++, pos++) {
+                if (pos < stringSize) printf("%c", content->strings[k][pos]);
+                else printf(" ");
+            }
+            printf(" |\n");
+            linesPrinted++;
         }
-        printf(" |\n");
     }
     
-    for (i = 0; i < (terminal->ws_row/2)-(neededLines); i++) printEmptyLine(terminal);
+    
+    for (i = 0; i < (terminal->ws_row/2)-(linesPrinted-2); i++) printEmptyLine(terminal);
     for (i = 0; i < terminal->ws_col; i++) printf("-");
 
+}
+
+void runtimeInterface(struct winsize *terminal) {
+    int command = 1;
+    screenContent message;
+    message.strings = NULL;
+
+    while (command != 0) {
+        scanf("%d", &command);
+        switch (command) {
+            case 1:
+                freeScreenContent(&message);
+
+                message.numberOfStrings = 1;
+
+                message.strings = (char**) calloc(1, sizeof(char*));
+                message.strings[0] = "Registro inserido";
+
+                printMainText(terminal, &message);
+                break;
+            case 2:
+                freeScreenContent(&message);
+
+                message.numberOfStrings = 2;
+
+                message.strings = (char**) calloc(2, sizeof(char*));
+                message.strings[0] = "Buscando...";
+                message.strings[1] = "Busca completada";
+
+                printMainText(terminal, &message);
+                break;
+            case 3:
+                freeScreenContent(&message);
+
+                message.numberOfStrings = 2;
+
+                message.strings = (char**) calloc(2, sizeof(char*));
+                message.strings[0] = "Carregando arquivo...";
+                message.strings[1] = "Arquivo carregado";
+
+                printMainText(terminal, &message);
+                break;
+            case 0:
+                printf("Finalizando o programa\n");
+                printf("Programa finalizado\n");
+                break;
+            default:
+                
+                break;
+        }
+    }
+    
+}
+
+void freeScreenContent(screenContent *objectToFree) {
+    if (objectToFree->strings) {
+        free(objectToFree->strings);
+    }
 }

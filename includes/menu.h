@@ -12,6 +12,13 @@ struct manInformations {
     char *history;
 };
 
+struct screenText {
+    char **strings;
+    int numberOfStrings;
+};
+
+typedef struct screenText screenContent;
+
 typedef struct manInformations manualInformations;
 
 void userInterface();
@@ -21,6 +28,8 @@ void buildHelp();
 void runManuals(char*);
 void printMan(manualInformations*, struct winsize*);
 void printEmptyLine(struct winsize*);
-void printText(struct winsize*, char*);
+void printMainText(struct winsize*, screenContent*);
+void runtimeInterface(struct winsize*);
+void freeScreenContent(screenContent*);
 
 #endif
