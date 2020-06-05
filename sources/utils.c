@@ -66,6 +66,9 @@ void raiseError(Errors error){
         exit(0);
     }
     else if(error == EMPTY_PAGE) printf("Empty page on B-Tree!\n");
+    else if(error == KEY_NOT_FOUND) printf("Key not found!\n");
+    else if(error == KEY_ALREADY_EXISTS) printf("Key already exists!\n");
+    else if(error == INVALID_FILE_POINTER) printf("Register or index file pointer error!\n");
 }
 
 void freeMetadata(Metadata *metadata){

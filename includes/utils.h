@@ -30,6 +30,7 @@ typedef struct metadataField{
 
 typedef struct metadata{
     FILE *fpRegister;
+    FILE *fpIndex;
     char registerFilename[50];
     metadataField key;
     metadataField *fields;
@@ -47,7 +48,9 @@ typedef enum errors{
     INVALID_DATA_TYPE,
     INVALID_QUERY,
     INVALID_RRN_PAGE,
-    INVALID_FILE_POINTER
+    INVALID_FILE_POINTER,
+    KEY_NOT_FOUND,
+    KEY_ALREADY_EXISTS
 }Errors;
 
 
