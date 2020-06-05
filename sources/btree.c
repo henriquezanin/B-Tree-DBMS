@@ -5,7 +5,8 @@
 #include <btree.h>
 
 /*Debug functions*/
-void printPromotedKey(promotedNode *);
+void printPromotedKey(promotedKey *);
+void printPageNode(btPage *);
 /* End debug functions*/
 
 btPage *readPageFromFile(FILE *fp){
@@ -37,7 +38,6 @@ Errors writePageIntoFile(long rrn, btPage *page, FILE *fp){
     fwrite(page->childs, sizeof(long), MAXKEYS+1, fp);
     fwrite(&page->numberOfKeys, sizeof(short), 1, fp);
     fwrite(&page->isLeaf, sizeof(BOOL), 1, fp);
-    /*printf("freespace: %d\n", FREE_SPACE_ON_PAGE);*/
     fwrite(freeSpace, sizeof(unsigned char), FREE_SPACE_ON_PAGE, fp);
     fflush(fp);
     free(freeSpace);
@@ -82,7 +82,7 @@ btPage *createTree(FILE *fp){
     return root;
 }
 
-btPage *getRoot(FILE *fp){
+btPage *getOrCreateRoot(FILE *fp){
     if(!fp) return NULL;
     fseek(fp,0L,SEEK_END);
     long fileSize = ftell(fp);
@@ -91,6 +91,15 @@ btPage *getRoot(FILE *fp){
     Get root page from B-tree header.
     There's 4088 bytes left for additional information
     */
+    long rootRRN = getTreeHeader(fp);
+    return getPage(rootRRN, fp);
+}
+
+btPage *getRoot(FILE *fp){
+    if(!fp) return NULL;
+    fseek(fp,0L,SEEK_END);
+    long fileSize = ftell(fp);
+    if(!fileSize) return NULL;
     long rootRRN = getTreeHeader(fp);
     return getPage(rootRRN, fp);
 }
@@ -105,8 +114,7 @@ void freePage(btPage *page){
     free(page);
 }
 
-/*TESTAR MASSIVAMENTE ESSA FUNCAO*/
-btPage *searchPositionOnPageAndInsert(btPage *page, promotedNode *newKey){
+btPage *searchPositionOnPageAndInsert(btPage *page, promotedKey *newKey){
     int pos;
     BOOL deallocatePage = FALSE;
     btPage *newPage = page;
@@ -121,8 +129,6 @@ btPage *searchPositionOnPageAndInsert(btPage *page, promotedNode *newKey){
         memcpy(newPage->childs, page->childs,(pos+1)*sizeof(long));
         deallocatePage = TRUE;
     }
-    /*puts("SearchPositionOnPageAndInsert com numero de chaves < que MAXKEYS");
-    printPageNode(page);*/
     memcpy(&newPage->records[pos+1], &page->records[pos], (page->numberOfKeys - pos)*sizeof(record));
     /* Verificar a integridade da copia dos filhos*/
     memcpy(&newPage->childs[pos+1],&page->childs[pos], (page->numberOfKeys - pos + 1)*sizeof(long));
@@ -131,8 +137,6 @@ btPage *searchPositionOnPageAndInsert(btPage *page, promotedNode *newKey){
     newPage->records[pos].recordRRN = newKey->recordRRN;
     newPage->numberOfKeys++;
     if(deallocatePage) freePage(page);
-    /*puts("SearchPositionOnPageAndInsert finalizada");
-    printPageNode(newPage);*/
     return newPage;
 }
 /*
@@ -157,8 +161,8 @@ btPage *splitAndCreateNewNode(btPage **page){
     return newPage;
 }
 
-promotedNode *extractPromotedNode(btPage *page){
-    promotedNode *node = (promotedNode*)calloc(1,sizeof(promotedNode));
+promotedKey *extractpromotedKey(btPage *page){
+    promotedKey *node = (promotedKey*)calloc(1,sizeof(promotedKey));
     node->key = page->records[0].key;
     node->recordRRN = page->records[0].recordRRN;
     memcpy(page->records,&page->records[1],(page->numberOfKeys-1)*sizeof(record));
@@ -168,7 +172,7 @@ promotedNode *extractPromotedNode(btPage *page){
     return node;
 }
 
-promotedNode *_split(btPage *page,FILE *fp, promotedNode *newKey){
+promotedKey *_split(btPage *page,FILE *fp, promotedKey *newKey){
     if(!page){
         raiseError(EMPTY_PAGE);
         return NULL;
@@ -177,19 +181,17 @@ promotedNode *_split(btPage *page,FILE *fp, promotedNode *newKey){
         raiseError(INVALID_FILE_POINTER);
         return NULL;
     }
-    /*page = searchPositionOnPageAndInsert(page, newKey);*/
     btPage *newPage = splitAndCreateNewNode(&page);
-    promotedNode *promoNode = extractPromotedNode(newPage);
-    promoNode->childs[0] = page->pageRRN; 
+    promotedKey *promoKey = extractpromotedKey(newPage);
+    promoKey->childs[0] = page->pageRRN; 
     fseek(fp,0l,SEEK_END);
-    promoNode->childs[1] = getPageRrnFromFilePointer(fp);
-    writePageIntoFile(promoNode->childs[0],page,fp);
-    writePageIntoFile(promoNode->childs[1],newPage,fp);
-    return promoNode;
+    promoKey->childs[1] = getPageRrnFromFilePointer(fp);
+    writePageIntoFile(promoKey->childs[0],page,fp);
+    writePageIntoFile(promoKey->childs[1],newPage,fp);
+    return promoKey;
 }
 
-promotedNode *insertIntoNode(btPage *page, promotedNode *newKey, FILE *fp){
-    /*puts("InsertIntoNode");*/
+promotedKey *insertIntoNode(btPage *page, promotedKey *newKey, FILE *fp){
     page = searchPositionOnPageAndInsert(page,newKey);
     if(page->numberOfKeys == MAXKEYS)
         return _split(page,fp,newKey);
@@ -197,7 +199,7 @@ promotedNode *insertIntoNode(btPage *page, promotedNode *newKey, FILE *fp){
     return NULL;
 }
 
-btPage *createNodeWithPromotedKey(promotedNode *promoKey){
+btPage *createNodeWithPromotedKey(promotedKey *promoKey){
     btPage *newPage = (btPage*)calloc(1,sizeof(btPage));
     newPage->records = (record*)calloc(MAXKEYS, sizeof(record));
     newPage->childs = (long*)malloc((MAXKEYS+1)*sizeof(long));
@@ -219,15 +221,11 @@ Errors setNodeAsRoot(btPage *page, FILE *fp){
     return err;
 }
 
-promotedNode *_bTreeInsert(btPage *node, promotedNode *key, FILE *fp){
-    promotedNode *promoKey = NULL;
+promotedKey *_bTreeInsert(btPage *node, promotedKey *key, FILE *fp){
+    promotedKey *promoKey = NULL;
     btPage *nextPage = NULL;
     int pos;
-    /*Como setar se o nó é uma folha????*/
-    /*printPromotedKey(key);
-    printPageNode(node);*/
     if(node->isLeaf){
-        /*printf("Is leaf recursivo\n");*/
         promoKey = insertIntoNode(node, key, fp);
         return promoKey;
     }
@@ -240,21 +238,18 @@ promotedNode *_bTreeInsert(btPage *node, promotedNode *key, FILE *fp){
     promoKey = _bTreeInsert(nextPage, key,fp);
     if(promoKey)
        promoKey = insertIntoNode(node, promoKey, fp);
-    /*freePage(nextPage);*/
+    freePage(nextPage);
     return promoKey;
 }
 
 Errors bTreeInsert(PrimaryIndex *newRecord, btPage *root, FILE *fp){
     Errors err = SUCCESS;
-    promotedNode *key = (promotedNode*)malloc(sizeof(promotedNode));
+    promotedKey *key = (promotedKey*)malloc(sizeof(promotedKey));
     key->key = newRecord->key;
     key->recordRRN = newRecord->RRN;
     memset(key->childs, -1, 2*sizeof(long));
-    /*printf("Chave a ser inserida:\n");*/
-    /*printPromotedKey(key);*/
-    promotedNode *promoKey = _bTreeInsert(root, key, fp);
+    promotedKey *promoKey = _bTreeInsert(root, key, fp);
     if(promoKey){
-        /*printPromotedKey(promoKey);*/
         btPage *newRoot = createNodeWithPromotedKey(promoKey);
         err = setNodeAsRoot(newRoot, fp);
     }
@@ -263,7 +258,6 @@ Errors bTreeInsert(PrimaryIndex *newRecord, btPage *root, FILE *fp){
 
 long bTreeSelect(btPage *node, int key, FILE *fp){
     int pos;
-    /*printPageNode(node);*/
     btPage *nextPage;
     for(pos = 0; pos < node->numberOfKeys && node->records[pos].key < key; pos++);
     if(pos == node->numberOfKeys) pos--;
@@ -278,7 +272,7 @@ long bTreeSelect(btPage *node, int key, FILE *fp){
     return bTreeSelect(nextPage, key, fp);
 }
 
-void printPromotedKey(promotedNode *key){
+void printPromotedKey(promotedKey *key){
     puts("CHAVE");
     printf("key: %d\n", key->key);
     printf("Record RRN: %ld\n", key->recordRRN);

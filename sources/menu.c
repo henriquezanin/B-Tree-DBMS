@@ -24,12 +24,12 @@ void userInterface() {
     mainText.strings = (char**) calloc(9, sizeof(char*));
 
     mainText.strings[0] = "BEM VINDO AO FAST ICMCDB";
-    mainText.strings[1] = "Feito por Henrique Zanin (xxxxxxxx) e Gabriel Marin (11218521)";
+    mainText.strings[1] = "Feito por Henrique Zanin (10441321) e Gabriel Marin (11218521)";
     mainText.strings[2] = "Comandos :";
     mainText.strings[3] = "1: Inserir";
     mainText.strings[4] = "2: Buscar";
-    mainText.strings[5] = "3: Carregar arquivo";
-    mainText.strings[6] = "4: Entrar com arquivo de insercao";
+    mainText.strings[5] = "3: Carregar tabela";
+    mainText.strings[6] = "4: Entrar com arquivo de comandos";
     mainText.strings[7] = "5: Ver comandos disponiveis";
     mainText.strings[8] = "0: Sair do programa";
     
@@ -55,6 +55,8 @@ void commandLine(){
             if(metadata){
                 if(metadata->fpRegister)
                     fclose(metadata->fpRegister);
+                if(metadata->fpIndex)
+                    fclose(metadata->fpIndex);
                 metadata->fpRegister = NULL;
                 freeMetadata(metadata);
             }

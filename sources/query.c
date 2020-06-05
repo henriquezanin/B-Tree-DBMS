@@ -37,48 +37,49 @@ enum operationType getOperationFromString(char *command){
 Errors insertQuery(Metadata *metadata, char *queryData){
     if(!metadata) return NULL_METADATA;
     Errors error;
-    /*
-    Until table doesn't change the file still opened for adding data. 
-    This reduces open/close operations and improves writing performance.
-    */
-    if(!metadata->fpRegister)
-        metadata->fpRegister = openOrCreateFile(metadata->registerFilename);
+    char *key = extractKeyFromInsertQuery(queryData);
+    if(selectQuery(metadata,key) == SUCCESS)
+        return KEY_ALREADY_EXISTS;
     PrimaryIndex *index = storeData(metadata, queryData);
     if(!index) error = NULL_METADATA;
-
-    FILE *fp = openOrCreateFile("index.dat");
-    btPage *root = getRoot(fp);
-    raiseError(bTreeInsert(index, root, fp));
-    fclose(fp);
+     
+    btPage *root = getOrCreateRoot(metadata->fpIndex);
+    raiseError(bTreeInsert(index, root, metadata->fpIndex));
 
     return error;
 }
 
-int selectQuery(Metadata *metadata, char *queryData){
+Errors selectQuery(Metadata *metadata, char *queryData){
     if(!metadata) return NULL_METADATA;
     long keyRrn;
-    FILE *fp = openOrCreateFile("index.dat");
-    btPage *root = getRoot(fp);
-    keyRrn = bTreeSelect(root, atoi(queryData),fp);
+    btPage *root = getRoot(metadata->fpIndex);
+    if(!root) return KEY_NOT_FOUND;
+    keyRrn = bTreeSelect(root, atoi(queryData),metadata->fpIndex);
     if(keyRrn < 0){
-        printf("Key not found!\n");
-        return -1;
+        return KEY_NOT_FOUND;
     }
     printByRRN(metadata, keyRrn);
-    fclose(fp);
-    return 0;
+    return SUCCESS;
 }
 
 Errors loadTable(char *filename, Metadata **metadata){
     if(*metadata){
         if((*metadata)->fpRegister)
             fclose((*metadata)->fpRegister);
+        if((*metadata)->fpIndex)
+            fclose((*metadata)->fpIndex);
         freeMetadata(*metadata);
     }
     *metadata = parseMetadata(filename);
+    (*metadata)->fpRegister = openOrCreateFile((*metadata)->registerFilename);
+    (*metadata)->fpIndex = openOrCreateFile("index.dat");
     return SUCCESS;
 }
 
+/*
+    Until table doesn't change the file still opened for adding data. 
+    This reduces open/close operations and improves writing performance.
+*/
 Errors evalQuery(Metadata **metadata, char *fullQuery){
     Errors err;
     if(!fullQuery) return err = EMPTY_QUERY;
