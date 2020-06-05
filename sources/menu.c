@@ -20,8 +20,8 @@ void userInterface() {
 
     screenContent mainText;
     
-    mainText.numberOfStrings = 8;
-    mainText.strings = (char**) calloc(8, sizeof(char*));
+    mainText.numberOfStrings = 9;
+    mainText.strings = (char**) calloc(9, sizeof(char*));
 
     mainText.strings[0] = "BEM VINDO AO FAST ICMCDB";
     mainText.strings[1] = "Feito por Henrique Zanin (xxxxxxxx) e Gabriel Marin (11218521)";
@@ -29,8 +29,9 @@ void userInterface() {
     mainText.strings[3] = "1: Inserir";
     mainText.strings[4] = "2: Buscar";
     mainText.strings[5] = "3: Carregar arquivo";
-    mainText.strings[6] = "4: Ver comandos disponiveis";
-    mainText.strings[7] = "0: Sair do programa";
+    mainText.strings[6] = "4: Entrar com arquivo de insercao";
+    mainText.strings[7] = "5: Ver comandos disponiveis";
+    mainText.strings[8] = "0: Sair do programa";
     
     printMainText(&terminal, &mainText);
     runtimeInterface(&terminal);
@@ -301,13 +302,19 @@ void runtimeInterface(struct winsize *terminal) {
                 printOnlyOneText(terminal, "Carregando arquivo...");
 
                 printf("\nDigite o nome do arquivo que deseja carregar: ");
-                scanf("%d", &forTextOnly);
+                scanf("%d", &forTestOnly);
                 printf("\n");
 
                 printMainOneText(terminal, "Arquivo carregado");
                 break;
             case 4:
                 printMainOneText(terminal, " ");
+                break;
+            case 5:
+                printOnlyOneText(terminal, "Digite o nome do arquivo com os comandos");
+                scanf("%d", &forTestOnly);
+
+                printMainOneText(terminal, "Todos os arquivos foram inseridos");
                 break;
             case 0:
                 printOnlyOneText(terminal, "Finalizando o programa...");
@@ -333,15 +340,16 @@ void freeScreenContent(screenContent *objectToFree) {
 void printMainOneText(struct winsize *terminal ,char *string) {
     screenContent message;
 
-    message.numberOfStrings = 6;
+    message.numberOfStrings = 7;
 
-    message.strings = (char**) calloc(6, sizeof(char*));
+    message.strings = (char**) calloc(7, sizeof(char*));
     message.strings[0] = string;
     message.strings[1] = "1: Inserir";
     message.strings[2] = "2: Buscar";
     message.strings[3] = "3: Carregar arquivo";
-    message.strings[4] = "4: Ver comandos disponiveis";
-    message.strings[5] = "0: Sair do programa";
+    message.strings[4] = "4: Entrar com arquivo de insercao";
+    message.strings[5] = "5: Ver comandos disponiveis";
+    message.strings[6] = "0: Sair do programa";
 
     printMainText(terminal, &message);
 }
