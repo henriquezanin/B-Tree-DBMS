@@ -8,18 +8,20 @@
 #include <unistd.h>
 #include <math.h>
 
+/* Printa indicador do command line */
 void printCommandLineMenu(){
     printf("db > ");
 }
 
+/* Roda o programa com a interface de usuário */
 void userInterface() {
     struct winsize terminal;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &terminal);
 
     screenContent mainText;
     
-    mainText.numberOfStrings = 6;
-    mainText.strings = (char**) calloc(6, sizeof(char*));
+    mainText.numberOfStrings = 8;
+    mainText.strings = (char**) calloc(8, sizeof(char*));
 
     mainText.strings[0] = "BEM VINDO AO FAST ICMCDB";
     mainText.strings[1] = "Feito por Henrique Zanin (xxxxxxxx) e Gabriel Marin (11218521)";
@@ -27,12 +29,15 @@ void userInterface() {
     mainText.strings[3] = "1: Inserir";
     mainText.strings[4] = "2: Buscar";
     mainText.strings[5] = "3: Carregar arquivo";
+    mainText.strings[6] = "4: Ver comandos disponiveis";
+    mainText.strings[7] = "0: Sair do programa";
     
     printMainText(&terminal, &mainText);
     runtimeInterface(&terminal);
     
 }
 
+/* Roda o programa no modo de bd */
 void commandLine(){
     Errors err;
     BOOL exitFlag = FALSE;
@@ -64,6 +69,7 @@ void commandLine(){
     }
 }
 
+/* Constroi o help na tela do usuario */
 void buildHelp() {
     printf("***\n");
     printf("Available commands:\n");
@@ -72,6 +78,7 @@ void buildHelp() {
     printf("***\n");
 }
 
+/* Commando man com seus programas registrados */
 void runManuals(char *command) {
     struct winsize terminal;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &terminal);
@@ -160,6 +167,7 @@ void runManuals(char *command) {
     }
 }
 
+/* Printa a estrutura do manual com as informacoes passadas pelo parametro */
 void printMan(manualInformations *infos, struct winsize *terminal) {
     int descSize = strlen(infos->description);
     int i = 0, j = 0;
@@ -186,6 +194,7 @@ void printMan(manualInformations *infos, struct winsize *terminal) {
         printf("\t%s\n\n", infos->history);
 }
 
+/* Printa uma linha vazia, só com as paredes na esquerda e direita do terminal */
 void printEmptyLine(struct winsize *terminal) {
     int j;
 
@@ -196,6 +205,7 @@ void printEmptyLine(struct winsize *terminal) {
     printf("|\n");
 }
 
+/* Printa os textos designados na tela, circulado por um quadrado responsivo com o terminal */
 void printMainText(struct winsize *terminal, screenContent *content) {
     int k, stringSize, neededLines, i, pos, linesPrinted = 0;
 
@@ -203,8 +213,11 @@ void printMainText(struct winsize *terminal, screenContent *content) {
     printf("\n");
 
     int halfSizeOfTerminal = terminal->ws_row/2;
+
+    /* Printa uma parte do terminal antes dos textos */
     for (i = 0; i < halfSizeOfTerminal-4; i++) printEmptyLine(terminal);
 
+    /* Printa os textos com os lados do terminal */
     for (k = 0; k < content->numberOfStrings; k++) {
         stringSize = strlen(content->strings[k]);
         neededLines = 1 + (stringSize/(terminal->ws_col - 4));
@@ -221,58 +234,90 @@ void printMainText(struct winsize *terminal, screenContent *content) {
         }
     }
     
-    
+    /* Printa o resto do terminal que sobrou */
     for (i = 0; i < (terminal->ws_row/2)-(linesPrinted-2); i++) printEmptyLine(terminal);
     for (i = 0; i < terminal->ws_col; i++) printf("-");
 
 }
 
+/* Runtime da interface de usuário */
 void runtimeInterface(struct winsize *terminal) {
     int command = 1;
     screenContent message;
     message.strings = NULL;
 
+    int forTestOnly;
+    char test[4];
+
     while (command != 0) {
         scanf("%d", &command);
         switch (command) {
             case 1:
+                printOnlyOneText(terminal, "Digite as informacoes necessarias");
+
+                printf("\nDigite a chave desejada: ");
+                scanf("%d", &forTestOnly);
+
+                printf("\nDigite o nome: ");
+                scanf("%d", &forTestOnly);
+
+                printf("\nDigite a idade: ");
+                scanf("%d", &forTestOnly);
+
+                printf("\nDigite a nota: ");
+                scanf("%d", &forTestOnly);
+                printf("\n");
+                
+
+                message.numberOfStrings = 5;
+
+                message.strings = (char**) calloc(5, sizeof(char*));
+                message.strings[0] = "Registro inserido, digite outro comando";
+                sprintf(test, "%d", forTestOnly);
+                message.strings[1] = test;
+                message.strings[2] = test;
+                message.strings[3] = test;
+                message.strings[4] = test;
+
+                printMainText(terminal, &message);
                 freeScreenContent(&message);
+                break;
+            case 2:
+                printf("\nDigite a chave que deseja buscar: ");
+                scanf("%d", &forTestOnly);
+                printf("\n");
+
+                printOnlyOneText(terminal, "Buscando...");
 
                 message.numberOfStrings = 1;
 
                 message.strings = (char**) calloc(1, sizeof(char*));
-                message.strings[0] = "Registro inserido";
+                message.strings[0] = "Busca completada, digite outro comando";
 
                 printMainText(terminal, &message);
-                break;
-            case 2:
                 freeScreenContent(&message);
-
-                message.numberOfStrings = 2;
-
-                message.strings = (char**) calloc(2, sizeof(char*));
-                message.strings[0] = "Buscando...";
-                message.strings[1] = "Busca completada";
-
-                printMainText(terminal, &message);
                 break;
             case 3:
-                freeScreenContent(&message);
+                printOnlyOneText(terminal, "Carregando arquivo...");
 
-                message.numberOfStrings = 2;
+                printf("\nDigite o nome do arquivo que deseja carregar: ");
+                scanf("%d", &forTextOnly);
+                printf("\n");
 
-                message.strings = (char**) calloc(2, sizeof(char*));
-                message.strings[0] = "Carregando arquivo...";
-                message.strings[1] = "Arquivo carregado";
-
-                printMainText(terminal, &message);
+                printMainOneText(terminal, "Arquivo carregado");
+                break;
+            case 4:
+                printMainOneText(terminal, " ");
                 break;
             case 0:
-                printf("Finalizando o programa\n");
-                printf("Programa finalizado\n");
+                printOnlyOneText(terminal, "Finalizando o programa...");
+
+
+
+                printOnlyOneText(terminal, "Programa finalizado");
                 break;
             default:
-                
+                printMainOneText(terminal, "Comando invalido");
                 break;
         }
     }
@@ -284,3 +329,31 @@ void freeScreenContent(screenContent *objectToFree) {
         free(objectToFree->strings);
     }
 }
+
+void printMainOneText(struct winsize *terminal ,char *string) {
+    screenContent message;
+
+    message.numberOfStrings = 6;
+
+    message.strings = (char**) calloc(6, sizeof(char*));
+    message.strings[0] = string;
+    message.strings[1] = "1: Inserir";
+    message.strings[2] = "2: Buscar";
+    message.strings[3] = "3: Carregar arquivo";
+    message.strings[4] = "4: Ver comandos disponiveis";
+    message.strings[5] = "0: Sair do programa";
+
+    printMainText(terminal, &message);
+}
+
+void printOnlyOneText(struct winsize *terminal ,char *string) {
+    screenContent message;
+
+    message.numberOfStrings = 1;
+
+    message.strings = (char**) calloc(1, sizeof(char*));
+    message.strings[0] = string;
+
+    printMainText(terminal, &message);
+}
+

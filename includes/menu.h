@@ -31,5 +31,7 @@ void printEmptyLine(struct winsize*);
 void printMainText(struct winsize*, screenContent*);
 void runtimeInterface(struct winsize*);
 void freeScreenContent(screenContent*);
+void printMainOneText(struct winsize*, char*);
+void printOnlyOneText(struct winsize*, char*);
 
 #endif
