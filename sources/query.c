@@ -41,34 +41,32 @@ Errors insertQuery(Metadata *metadata, char *queryData){
     Until table doesn't change the file still opened for adding data. 
     This reduces open/close operations and improves writing performance.
     */
-    if(!metadata->fpRegister || !metadata->fpIndex)
-        return INVALID_FILE_POINTER;
-    char *key = extractKeyFromInsertQuery(queryData);
-    if(selectQuery(metadata,key) == SUCCESS){
-        free(key);
-        return KEY_ALREADY_EXISTS;
-    }
+    if(!metadata->fpRegister)
+        metadata->fpRegister = openOrCreateFile(metadata->registerFilename);
     PrimaryIndex *index = storeData(metadata, queryData);
     if(!index) error = NULL_METADATA;
-    btPage *root = getRoot(metadata->fpIndex);
-    raiseError(bTreeInsert(index, root, metadata->fpIndex));
+
+    FILE *fp = openOrCreateFile("index.dat");
+    btPage *root = getRoot(fp);
+    raiseError(bTreeInsert(index, root, fp));
+    fclose(fp);
 
     return error;
 }
 
-Errors selectQuery(Metadata *metadata, char *queryData){
-    if(!metadata)
-        return NULL_METADATA;
-    if(!metadata->fpIndex)
-        return INVALID_FILE_POINTER;
+int selectQuery(Metadata *metadata, char *queryData){
+    if(!metadata) return NULL_METADATA;
     long keyRrn;
-    btPage *root = getRoot(metadata->fpIndex);
-    keyRrn = bTreeSelect(root, atoi(queryData),metadata->fpIndex);
+    FILE *fp = openOrCreateFile("index.dat");
+    btPage *root = getRoot(fp);
+    keyRrn = bTreeSelect(root, atoi(queryData),fp);
     if(keyRrn < 0){
-        return KEY_NOT_FOUND;
+        printf("Key not found!\n");
+        return -1;
     }
     printByRRN(metadata, keyRrn);
-    return SUCCESS;
+    fclose(fp);
+    return 0;
 }
 
 Errors loadTable(char *filename, Metadata **metadata){
@@ -78,8 +76,6 @@ Errors loadTable(char *filename, Metadata **metadata){
         freeMetadata(*metadata);
     }
     *metadata = parseMetadata(filename);
-    (*metadata)->fpRegister = openOrCreateFile((*metadata)->registerFilename);
-    (*metadata)->fpIndex = openOrCreateFile("index.dat");
     return SUCCESS;
 }
 
