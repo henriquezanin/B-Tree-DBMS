@@ -301,3 +301,13 @@ Data **parseInsertQueryData(Metadata *metadata, char *query){
 
     return data;
 }
+
+char *extractKeyFromInsertQuery(char *queryData){
+    int size = 0;
+    char *digit;
+    while(isdigit(queryData[size]))
+        size++;
+    digit = (char*)calloc(size+1, sizeof(char));
+    strncpy(digit,queryData,size);
+    return digit;
+}

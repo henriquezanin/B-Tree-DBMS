@@ -49,6 +49,9 @@ void commandLine(){
             if(metadata){
                 if(metadata->fpRegister)
                     fclose(metadata->fpRegister);
+                if(metadata->fpIndex)
+                    fclose(metadata->fpIndex);
+                metadata->fpIndex = NULL;
                 metadata->fpRegister = NULL;
                 freeMetadata(metadata);
             }
