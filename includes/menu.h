@@ -17,6 +17,15 @@ struct screenText {
     int numberOfStrings;
 };
 
+struct userInput {
+    char *name;
+    char *nusp;
+    char *age;
+    char *grade;
+};
+
+typedef struct userInput userInput;
+
 typedef struct screenText screenContent;
 
 typedef struct manInformations manualInformations;
@@ -33,5 +42,6 @@ void runtimeInterface(struct winsize*);
 void freeScreenContent(screenContent*);
 void printMainOneText(struct winsize*, char*);
 void printOnlyOneText(struct winsize*, char*);
+userInput* readUserInput();
 
 #endif

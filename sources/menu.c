@@ -243,42 +243,30 @@ void printMainText(struct winsize *terminal, screenContent *content) {
 
 /* Runtime da interface de usuário */
 void runtimeInterface(struct winsize *terminal) {
-    int command = 1;
+    int command = 0;
+    char *aux;
     screenContent message;
     message.strings = NULL;
 
     int forTestOnly;
-    char test[4];
 
     while (command != 0) {
-        scanf("%d", &command);
+        aux = readLine(stdin);
+        command = atoi(aux);
+        free(aux);
         switch (command) {
             case 1:
                 printOnlyOneText(terminal, "Digite as informacoes necessarias");
-
-                printf("\nDigite a chave desejada: ");
-                scanf("%d", &forTestOnly);
-
-                printf("\nDigite o nome: ");
-                scanf("%d", &forTestOnly);
-
-                printf("\nDigite a idade: ");
-                scanf("%d", &forTestOnly);
-
-                printf("\nDigite a nota: ");
-                scanf("%d", &forTestOnly);
-                printf("\n");
                 
-
+                userInput *registro = readUserInput();
                 message.numberOfStrings = 5;
 
                 message.strings = (char**) calloc(5, sizeof(char*));
                 message.strings[0] = "Registro inserido, digite outro comando";
-                sprintf(test, "%d", forTestOnly);
-                message.strings[1] = test;
-                message.strings[2] = test;
-                message.strings[3] = test;
-                message.strings[4] = test;
+                message.strings[1] = registro->name;
+                message.strings[2] = registro->nusp;
+                message.strings[3] = registro->age;
+                message.strings[4] = registro->grade;
 
                 printMainText(terminal, &message);
                 freeScreenContent(&message);
@@ -365,3 +353,23 @@ void printOnlyOneText(struct winsize *terminal ,char *string) {
     printMainText(terminal, &message);
 }
 
+userInput* readUserInput() {
+    userInput *cadastro = (userInput*) calloc(1, sizeof(userInput));
+    char *string = NULL;
+
+    printf("\nDigite a chave desejada: ");
+    cadastro->nusp = readLine(stdin);
+
+
+    printf("\nDigite o nome: ");
+    cadastro->name = readLine(stdin);
+
+    printf("\nDigite a idade: ");
+    cadastro->age = readLine(stdin);
+
+    printf("\nDigite a nota: ");
+    cadastro->grade = readLine(stdin);
+    printf("\n");
+
+    return cadastro;
+}
