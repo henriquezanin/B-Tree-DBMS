@@ -72,6 +72,33 @@ void commandLine(){
     }
 }
 
+void batchLoad(FILE *fp){
+    Errors err;
+    BOOL exitFlag = FALSE;
+    char *query;
+    Metadata *metadata = NULL;
+    while (exitFlag == FALSE){
+        query = readLine(fp);
+        err = evalQuery(&metadata, query);
+        switch (err){
+        case EXIT:
+            if(metadata){
+                if(metadata->fpRegister)
+                    fclose(metadata->fpRegister);
+                if(metadata->fpIndex)
+                    fclose(metadata->fpIndex);
+                metadata->fpRegister = NULL;
+                freeMetadata(metadata);
+            }
+            exitFlag = TRUE;
+            break;
+        default:
+            raiseError(err);
+            break;
+        }
+    }
+}
+
 /* Constroi o help na tela do usuario */
 void buildHelp() {
     printf("***\n");
