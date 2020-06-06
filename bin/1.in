@@ -1,9 +1,0 @@
-load 1.dat
-insert 4, "Joao Mario", 15, 324.54
-insert 1, "Pedro Carlos", 21, 56.34
-insert 2, "Marcelo ,Isidoro", 34, 673.23
-insert 5, "Marcelo ,Isidoro", 34, 673.23
-insert 6, "Marcelo ,Isidoro", 34, 673.23
-insert 7, "Marcelo ,Isidoro", 34, 673.23
-search 7
-exit

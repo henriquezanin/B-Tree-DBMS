@@ -32,6 +32,7 @@ typedef struct manInformations manualInformations;
 
 void userInterface();
 void commandLine();
+void batchLoad(FILE *);
 void printCommandLineMenu();
 void buildHelp();
 void runManuals(char*);

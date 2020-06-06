@@ -13,4 +13,4 @@ run:
 
 clean:
 	@rm bin/index.dat
-	@rm bin/registros.reg
+	@rm bin/dados.reg

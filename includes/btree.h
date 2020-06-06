@@ -22,14 +22,14 @@ typedef struct page{
     long pageRRN;
 } btPage;
 
-typedef struct promotednode{
+typedef struct promotedkey{
     int key;
     long recordRRN;
     long childs[2];
-} promotedNode;
+} promotedKey;
 
-btPage *getRoot(FILE *);
+btPage *getOrCreateRoot(FILE *);
+btPage *getRoot(FILE *fp);
 Errors bTreeInsert(PrimaryIndex *, btPage *, FILE *);
 long bTreeSelect(btPage *, int, FILE *);
-void printPageNode(btPage *);
 #endif

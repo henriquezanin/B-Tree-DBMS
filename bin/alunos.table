@@ -1,0 +1,19 @@
+//Isso é um comentário válido, sua leitura não será considerada
+//Espaços em branco também serão ignorados
+
+filename: dados.reg
+
+key-name: nUSP
+key-type: int
+
+field-name: Nome
+field-type: char[20]
+
+field-name: Sobrenome
+field-type: char[50]
+
+field-name: Curso
+field-type: char[30]
+
+field-name: Nota
+field-type: float
