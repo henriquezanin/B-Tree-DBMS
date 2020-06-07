@@ -272,12 +272,11 @@ void printMainText(struct winsize *terminal, screenContent *content) {
 
 /* Runtime da interface de usuário */
 void runtimeInterface(struct winsize *terminal) {
-    int command = 0;
+    int command = 1;
     char *aux;
     screenContent message;
     message.strings = NULL;
-
-    int forTestOnly;
+    char *string = NULL;
 
     while (command != 0) {
         aux = readLine(stdin);
@@ -286,58 +285,127 @@ void runtimeInterface(struct winsize *terminal) {
         switch (command) {
             case 1:
                 printOnlyOneText(terminal, "Digite as informacoes necessarias");
-                
+
                 userInput *registro = readUserInput();
-                message.numberOfStrings = 5;
+                printRegister(registro);
+                message.numberOfStrings = 6;
 
-                message.strings = (char**) calloc(5, sizeof(char*));
+                message.strings = (char**) calloc(6, sizeof(char*));
                 message.strings[0] = "Registro inserido, digite outro comando";
-                message.strings[1] = registro->name;
-                message.strings[2] = registro->nusp;
-                message.strings[3] = registro->age;
-                message.strings[4] = registro->grade;
 
+                string = (char*) calloc(6+strlen(registro->nusp), sizeof(char));
+                strcpy(string, "NUSP: ");
+                message.strings[1] = strcat(string, registro->nusp);
+
+                string = (char*) calloc(6+strlen(registro->name), sizeof(char));
+                strcpy(string, "NOME: ");
+                message.strings[2] = strcat(string, registro->name);
+
+
+                string = (char*) calloc(11+strlen(registro->lastName), sizeof(char));
+                strcpy(string, "SOBRENOME: ");
+                strcat(string, registro->lastName);
+                message.strings[3] = string;
+                printf("MAIS ANTES: %s\n", message.strings[3]);
+
+                char *bug = (char*) calloc((7+strlen(registro->course)),sizeof(char));
+                strcpy(bug, "CURSO: ");
+                printf("ANTES: %s\n", message.strings[3]);
+                printf("VER: %s\n", bug);
+                printf("MESSAGE: %s\n", registro->course);
+                message.strings[4] = strcat(bug, registro->course);
+                printf("MAIS DEPOIS AINDA: %s\n", message.strings[3]);
+
+                string = (char*) calloc(6+strlen(registro->grade), sizeof(char));
+                strcpy(string, "NOTA: ");
+                message.strings[5] = strcat(string, registro->grade);
+
+                printOnlyOneText(terminal, "Inserindo cadastro...");
+                printf("TESTE: %s\n", message.strings[1]);
+                printf("TESTE: %s\n", message.strings[2]);
+                printf("TESTE: %s\n", message.strings[3]);
+                printf("TESTE: %s\n", message.strings[4]);
+                printf("TESTE: %s\n", message.strings[5]);
+                
+                /* INTEGRAR COM O MINDUCA */
+
+                char *formattedString = formatStringToBtreePattern(registro);
+                printf("FORMATADO: %s\n", formattedString);
                 printMainText(terminal, &message);
+                
                 freeScreenContent(&message);
+                freeRegister(registro);
                 break;
             case 2:
-                printf("\nDigite a chave que deseja buscar: ");
-                scanf("%d", &forTestOnly);
+                printf("\nDigite o numero usp que deseja buscar: ");
+
+                char *nusp = readLine(stdin);
+                /* TIPO *infoUsers = FAZBUSCA(); */
                 printf("\n");
 
                 printOnlyOneText(terminal, "Buscando...");
 
-                message.numberOfStrings = 1;
+                /* message.numberOfStrings = 6;
 
-                message.strings = (char**) calloc(1, sizeof(char*));
+                message.strings = (char**) calloc(6, sizeof(char*));
                 message.strings[0] = "Busca completada, digite outro comando";
 
+                string = (char*) calloc(6+strlen(registro->nusp), sizeof(char));
+                stringAux = "NUSP: ";
+                strcpy(string, stringAux);
+                message.strings[1] = strcat(string, registro->nusp);
+
+                string = (char*) calloc(6+strlen(registro->name), sizeof(char));
+                stringAux = "NOME: ";
+                strcpy(string, stringAux);
+                message.strings[2] = strcat(string, registro->name);
+
+
+                string = (char*) calloc(11+strlen(registro->lastName), sizeof(char));
+                stringAux = "SOBRENOME: ";
+                strcpy(string, stringAux);
+                message.strings[3] = strcat(string, registro->lastName);
+
+                string = (char*) malloc((7+strlen(registro->course))*sizeof(char));
+                stringAux = "CURSO: ";
+                strcpy(string, stringAux);
+                message.strings[4] = strcat(string, registro->course);
+
+                string = (char*) calloc(6+strlen(registro->grade), sizeof(char));
+                stringAux = "NOTA: ";
+                strcpy(string, stringAux);
+                message.strings[5] = strcat(string, registro->grade);
+
                 printMainText(terminal, &message);
-                freeScreenContent(&message);
+                freeScreenContent(&message); */
+                free(nusp);
                 break;
             case 3:
                 printOnlyOneText(terminal, "Carregando arquivo...");
 
                 printf("\nDigite o nome do arquivo que deseja carregar: ");
-                scanf("%d", &forTestOnly);
+                string = readLine(stdin);
                 printf("\n");
 
+                /* INTEGRAR COM MINDUCA */
+
                 printMainOneText(terminal, "Arquivo carregado");
-                break;
-            case 4:
-                printMainOneText(terminal, " ");
+                free(string);
                 break;
             case 5:
+                printMainOneText(terminal, " ");
+                break;
+            case 4:
                 printOnlyOneText(terminal, "Digite o nome do arquivo com os comandos");
-                scanf("%d", &forTestOnly);
+                string = readLine(stdin);
 
                 printMainOneText(terminal, "Todos os arquivos foram inseridos");
+                free(string);
                 break;
             case 0:
                 printOnlyOneText(terminal, "Finalizando o programa...");
-
-
-
+                if (aux) free(aux);
+                if (string) free(string);
                 printOnlyOneText(terminal, "Programa finalizado");
                 break;
             default:
@@ -384,21 +452,73 @@ void printOnlyOneText(struct winsize *terminal ,char *string) {
 
 userInput* readUserInput() {
     userInput *cadastro = (userInput*) calloc(1, sizeof(userInput));
-    char *string = NULL;
 
-    printf("\nDigite a chave desejada: ");
+    printf("\nDigite o numero usp: ");
     cadastro->nusp = readLine(stdin);
 
 
     printf("\nDigite o nome: ");
     cadastro->name = readLine(stdin);
 
-    printf("\nDigite a idade: ");
-    cadastro->age = readLine(stdin);
+    printf("\nDigite o sobrenome: ");
+    cadastro->lastName = readLine(stdin);
+
+    printf("\nDigite o curso: ");
+    cadastro->course = readLine(stdin);
 
     printf("\nDigite a nota: ");
     cadastro->grade = readLine(stdin);
     printf("\n");
 
     return cadastro;
+}
+
+char* formatStringToBtreePattern(userInput *cadastro) {
+    int holeSize = strlen(cadastro->name) + strlen(cadastro->nusp) + strlen(cadastro->lastName) + strlen(cadastro->grade) + strlen(cadastro->course);
+    char *aspas = "\"";
+    char *virgula = ",";
+    char *resultString = (char*) malloc(holeSize+10);
+
+    strcat(resultString, cadastro->nusp);
+    strcat(resultString, virgula);
+    strcat(resultString, aspas);
+    strcat(resultString, cadastro->name);
+    strcat(resultString, aspas);
+    strcat(resultString, virgula);
+    strcat(resultString, aspas);
+    strcat(resultString, cadastro->lastName);
+    strcat(resultString, aspas);
+    strcat(resultString, virgula);
+    strcat(resultString, aspas);
+    strcat(resultString, cadastro->course);
+    strcat(resultString, aspas);
+    strcat(resultString, virgula);
+    strcat(resultString, cadastro->grade);
+
+    return resultString;
+}
+
+void freeAll() {
+
+}
+
+void freeRegister(userInput *var) {
+
+    free(var->name);
+    free(var->lastName);
+    free(var->grade);
+    free(var->course);
+    free(var->nusp);
+    free(var);
+
+}
+
+void printRegister(userInput *user) {
+
+    printf("NAME: %s\n", user->name);
+    printf("LAST NAME: %s\n", user->lastName);
+    printf("CURSO: %s\n", user->course);
+    printf("GRADE: %s\n", user->grade);
+    printf("NUSP: %s\n", user->nusp);
+
 }

@@ -20,7 +20,8 @@ struct screenText {
 struct userInput {
     char *name;
     char *nusp;
-    char *age;
+    char *lastName;
+    char *course;
     char *grade;
 };
 
@@ -43,6 +44,11 @@ void runtimeInterface(struct winsize*);
 void freeScreenContent(screenContent*);
 void printMainOneText(struct winsize*, char*);
 void printOnlyOneText(struct winsize*, char*);
+void printRegister(userInput*);
 userInput* readUserInput();
+char* formatStringToBtreePattern(userInput*);
+void freeAll();
+void freeRegister(userInput*);
+
 
 #endif
