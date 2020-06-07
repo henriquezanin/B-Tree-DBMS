@@ -276,7 +276,7 @@ void runtimeInterface(struct winsize *terminal) {
     char *string = NULL;
     Metadata *metadata = NULL;
     evalQuery(&metadata,"load alunos.table");
-
+    char *query;
 
     while (command != 0) {
         aux = readLine(stdin);
@@ -284,7 +284,12 @@ void runtimeInterface(struct winsize *terminal) {
         free(aux);
         switch (command) {
             case 1:
-                insertFromUI(terminal, string);
+                query =  insertFromUI(terminal, message);
+                raiseError(evalQuery(&metadata, query));
+                printMainText(terminal, message);
+                freeScreenContent(message);
+
+                free(query);
                 break;
             case 2:
 
@@ -298,7 +303,7 @@ void runtimeInterface(struct winsize *terminal) {
                 strcat(comando, nusp);
 
                 printOnlyOneText(terminal, "Buscando...");
-                evalQuery(&metadata, comando);
+                raiseError(evalQuery(&metadata, comando));
                 /* TIPO *infoUsers = FAZBUSCA(); */
                 
 
@@ -343,7 +348,6 @@ void runtimeInterface(struct winsize *terminal) {
                 break;
             case 0:
                 printOnlyOneText(terminal, "Finalizando o programa...");
-                if (aux) free(aux);
                 if (string) free(string);
                 if(metadata){
                     if(metadata->fpRegister)
@@ -467,8 +471,7 @@ void printRegister(userInput *user) {
 
 }
 
-void insertFromUI(struct winsize *terminal, char *string) {
-    screenContent *message = (screenContent*)calloc(1,sizeof(screenContent));
+char* insertFromUI(struct winsize *terminal, screenContent *message) {
     printOnlyOneText(terminal, "Digite as informacoes necessarias");
 
     userInput *registro = readUserInput();
@@ -478,31 +481,43 @@ void insertFromUI(struct winsize *terminal, char *string) {
     message->strings = (char**) calloc(6, sizeof(char*));
     message->strings[0] = createStringOnHeap("Registro inserido, digite outro comando");
 
-    string = (char*) calloc(6+strlen(registro->nusp), sizeof(char));
-    strcpy(string, "NUSP: ");
-    message->strings[1] = strcat(string, registro->nusp);
+    message->strings[1] = twoStringConcat("NUSP: ", registro->nusp);
 
-    string = (char*) calloc(6+strlen(registro->name), sizeof(char));
-    strcpy(string, "NOME: ");
-    message->strings[2] = strcat(string, registro->name);
+    message->strings[2] = twoStringConcat("NOME: ", registro->name);
 
+    message->strings[3] = twoStringConcat("SOBRENOME: ", registro->lastName);
 
-    string = (char*) calloc(11+strlen(registro->lastName), sizeof(char));
-    strcpy(string, "SOBRENOME: ");
-    message->strings[3] = strcat(string, registro->lastName);
+    message->strings[4] = twoStringConcat("CURSO: ", registro->course);
 
-    char *bug = (char*) calloc((7+strlen(registro->course)),sizeof(char));
-    strcpy(bug, "CURSO: ");
-    message->strings[4] = strcat(bug, registro->course);
-
-    string = (char*) calloc(6+strlen(registro->grade), sizeof(char));
-    strcpy(string, "NOTA: ");
-    message->strings[5] = strcat(string, registro->grade);
+    message->strings[5] = twoStringConcat("NOTA: ", registro->grade);
 
     printOnlyOneText(terminal, "Inserindo cadastro...");
     
+    
     char *formattedString = formatStringToBtreePattern(registro);
-    printMainText(terminal, message);
-    freeScreenContent(message);
+    char *comando = (char*) calloc(8+strlen(formattedString), sizeof(char));
+    comando = twoStringConcat("insert ", formattedString);
+
     freeRegister(registro);
+    free(formattedString);
+
+    return comando;
 }
+
+
+/* Por questoes de compatibilidade com o MacOS, evitamos ao máximo usar o strcat */
+/* Para evitar tal função, criamos essa que utiliza somente o strcpy */
+/* Tentamos fazer com strcat por muitas horas, porém é muito instavél no MacOS dando muitos erros */
+/* Os erros consistiam em "Illegal hardware instruction" */
+char* twoStringConcat(char *f, char *s) {
+    size_t len_f = fmin(strlen(f), 1024);
+    size_t len_s = fmin(strlen(s), 1024);
+    size_t len_total = len_f + len_s;
+    char *tmp = malloc(len_total + 1);
+    strncpy(tmp, f, len_f);
+    strncpy(tmp+len_f, s, len_s);
+    tmp[len_total] = '\0';
+    
+    return tmp;
+}
+

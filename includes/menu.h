@@ -36,12 +36,12 @@ void commandLine();
 void batchLoad(FILE *);
 void printCommandLineMenu();
 void buildHelp();
+char* insertFromUI(struct winsize*, screenContent*);
 void runManuals(char*);
 void printMan(manualInformations*, struct winsize*);
 void printEmptyLine(struct winsize*);
 void printMainText(struct winsize*, screenContent*);
 void runtimeInterface(struct winsize*);
-void insertFromUI(struct winsize*, char*);
 void freeScreenContent(screenContent*);
 void printMainOneText(struct winsize*, char*);
 void printOnlyOneText(struct winsize*, char*);
@@ -50,6 +50,7 @@ userInput* readUserInput();
 char* formatStringToBtreePattern(userInput*);
 void freeAll();
 void freeRegister(userInput*);
+char* twoStringConcat(char*, char*);
 
 
 #endif
