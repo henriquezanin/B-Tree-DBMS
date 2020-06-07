@@ -93,13 +93,47 @@ void printData(Metadata *metadata, Data **data){
     printf("\n");
 }
 
+char *createStringOnHeap(char *string){
+    char *new = (char*)calloc(strlen(string),sizeof(char));
+    strcpy(new,string);
+    return new;
+}
+
+char *convertTypeToString(enum dataType type){
+    char *stringType;
+    switch (type){
+    case Int:
+        stringType = createStringOnHeap("Int");
+        break;
+    case Float: 
+        stringType = createStringOnHeap("Float");
+        break;
+    case Double: 
+        stringType = createStringOnHeap("Double");
+        break;
+    case Char: 
+        stringType = createStringOnHeap("Char");
+        break;
+    default:
+        stringType = NULL;
+        break;
+    }
+    return stringType;
+}
+
 Errors printMetadata(Metadata *metadata){
     if(!metadata) return NULL_METADATA;
     int i;
-    printf("Key name: %s\tKey Type:%d\tSize: %d\n", metadata->key.description, metadata->key.type, metadata->key.lenght);
+    char *type = convertTypeToString(metadata->key.type);
+    printf("\nKey name: %s\tKey Type:%s\n\n", metadata->key.description, type);
 
     for(i=0;i<metadata->fieldCounter;i++){
-        printf("Description: %s\tType:%d\tSize: %d\n",metadata->fields[i].description ,metadata->fields[i].type, metadata->fields[i].lenght);
+        type = convertTypeToString(metadata->fields[i].type);
+        if(metadata->fields[i].type != Char)
+            printf("Description: %s\tType: %s\n",metadata->fields[i].description ,type);
+        else
+            printf("Description: %s\tType: %s[%d]\n",
+            metadata->fields[i].description ,type, metadata->fields[i].lenght);
     }
     printf("Register Size: %d\n\n", metadata->registerSize);
     return SUCCESS;
