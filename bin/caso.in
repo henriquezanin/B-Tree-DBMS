@@ -1,0 +1,22 @@
+load alunos.table
+insert 1,"Jenny","Jeffrey","Sistemas de Informacao",9.40
+insert 2,"Vincent","James","Sistemas de Informacao",9.10
+insert 3,"Tim","Leonard","Sistemas de Informacao",2.00
+insert 4,"Marie","Alma","Sistemas de Informacao",0.70
+insert 5,"Anita","Elfrieda","Sistemas de Informacao",7.40
+insert 6,"Phillip","Donald","Sistemas de Informacao",9.30
+insert 7,"Anthony","Fernando","Sistemas de Informacao",9.10
+insert 8,"Eloise","Mildred","Sistemas de Informacao",7.50
+insert 9,"Alma","Fern","Sistemas de Informacao",2.60
+insert 10,"Stanley","Maxine","Sistemas de Informacao",5.40
+insert 11,"Dorothy","Terri","Sistemas de Informacao",2.10
+insert 12,"Patricia","Nellie","Sistemas de Informacao",5.40
+insert 13,"Steven","Yolanda","Sistemas de Informacao",0.40
+insert 14,"Bertha","Sheron","Sistemas de Informacao",2.70
+insert 15,"Christopher","Maxine","Sistemas de Informacao",8.40
+insert 16,"Joy","Mark","Sistemas de Informacao",6.40
+insert 17,"Clara","Randal","Sistemas de Informacao",5.40
+insert 18,"Stanley","Tim","Sistemas de Informacao",8.60
+insert 19,"Jean","Christopher","Sistemas de Informacao",5.90
+insert 20,"Terri","Rachel","Sistemas de Informacao",9.90
+exit
