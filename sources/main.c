@@ -17,7 +17,11 @@ int main(int argc, char *argv[]){
            batchLoad(fp);
            fclose(fp);
         }
-        /*SHOW AVALIABLE PARAMETERS*/
+        else{
+            puts("Try:");
+            puts("--cmd -> enter into command line menu.");
+            puts("--batch filename.in -> load file with commands.");
+        }
     }
     else{
       userInterface();

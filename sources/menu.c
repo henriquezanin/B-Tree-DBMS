@@ -93,6 +93,7 @@ void batchLoad(FILE *fp){
                     fclose(metadata->fpIndex);
                 metadata->fpRegister = NULL;
                 freeMetadata(metadata);
+            puts("Batch load finished");
             }
             exitFlag = TRUE;
             break;
@@ -482,9 +483,13 @@ char* insertFromUI(struct winsize *terminal, screenContent *message) {
 /* Para evitar tal função, criamos essa que utiliza somente o strcpy */
 /* Tentamos fazer com strcat por muitas horas, porém é muito instavél no MacOS dando muitos erros */
 /* Os erros consistiam em "Illegal hardware instruction" */
+double min(double a, double b) {
+    return a<b ? a : b;
+}
+
 char* twoStringConcat(char *f, char *s) {
-    size_t len_f = fmin(strlen(f), 1024);
-    size_t len_s = fmin(strlen(s), 1024);
+    size_t len_f = min(strlen(f), 1024);
+    size_t len_s = min(strlen(s), 1024);
     size_t len_total = len_f + len_s;
     char *tmp = malloc(len_total + 1);
     strncpy(tmp, f, len_f);
