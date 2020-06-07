@@ -275,6 +275,7 @@ void runtimeInterface(struct winsize *terminal) {
     screenContent *message = (screenContent*)calloc(1,sizeof(screenContent));
     char *string = NULL;
     Metadata *metadata = NULL;
+    evalQuery(&metadata,"load alunos.table");
 
 
     while (command != 0) {
@@ -344,6 +345,13 @@ void runtimeInterface(struct winsize *terminal) {
                 printOnlyOneText(terminal, "Finalizando o programa...");
                 if (aux) free(aux);
                 if (string) free(string);
+                if(metadata){
+                    if(metadata->fpRegister)
+                        fclose(metadata->fpRegister);
+                    if(metadata->fpIndex)
+                        fclose(metadata->fpIndex);
+                    freeMetadata(metadata);
+                }
                 printOnlyOneText(terminal, "Programa finalizado");
                 break;
             default:
