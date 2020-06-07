@@ -304,16 +304,16 @@ void runtimeInterface(struct winsize *terminal) {
 
                 string = (char*) calloc(11+strlen(registro->lastName), sizeof(char));
                 strcpy(string, "SOBRENOME: ");
-                strcat(string, registro->lastName);
-                message.strings[3] = string;
+                message.strings[3] = strcat(string, registro->lastName);
                 printf("MAIS ANTES: %s\n", message.strings[3]);
 
-                char *bug = (char*) calloc((7+strlen(registro->course)),sizeof(char));
-                strcpy(bug, "CURSO: ");
+
+                string = (char*) calloc((7+strlen(registro->course)),sizeof(char));
+                strcpy(string, "CURSO: ");
                 printf("ANTES: %s\n", message.strings[3]);
-                printf("VER: %s\n", bug);
+                printf("VER: %s\n", string);
                 printf("MESSAGE: %s\n", registro->course);
-                message.strings[4] = strcat(bug, registro->course);
+                message.strings[4] = strcat(string, registro->course);
                 printf("MAIS DEPOIS AINDA: %s\n", message.strings[3]);
 
                 string = (char*) calloc(6+strlen(registro->grade), sizeof(char));
