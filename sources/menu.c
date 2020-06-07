@@ -279,6 +279,7 @@ void runtimeInterface(struct winsize *terminal) {
     char *query;
 
     while (command != 0) {
+        printf("Digite o comando: ");
         aux = readLine(stdin);
         command = atoi(aux);
         free(aux);

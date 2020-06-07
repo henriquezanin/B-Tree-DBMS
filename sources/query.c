@@ -101,7 +101,7 @@ Errors evalQuery(Metadata **metadata, char *fullQuery){
     case load:
         /*Load table file*/
         loadTable(queryData, metadata);
-        printMetadata(*metadata);
+        /* printMetadata(*metadata); */
         break;
     case table:
         printMetadata(*metadata);

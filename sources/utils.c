@@ -138,9 +138,3 @@ Errors printMetadata(Metadata *metadata){
     printf("Register Size: %d\n\n", metadata->registerSize);
     return SUCCESS;
 }
-
-char *createStringOnHeap(char *string){
-    char *new = (char*)calloc(strlen(string),sizeof(char));
-    strcpy(new,string);
-    return new;
-}
