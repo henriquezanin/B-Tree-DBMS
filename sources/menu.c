@@ -274,8 +274,7 @@ void printMainText(struct winsize *terminal, screenContent *content) {
 void runtimeInterface(struct winsize *terminal) {
     int command = 1;
     char *aux;
-    screenContent message;
-    message.strings = NULL;
+    screenContent *message = (screenContent*)calloc(1,sizeof(screenContent));
     char *string = NULL;
 
     while (command != 0) {
@@ -288,52 +287,52 @@ void runtimeInterface(struct winsize *terminal) {
 
                 userInput *registro = readUserInput();
                 printRegister(registro);
-                message.numberOfStrings = 6;
+                message->numberOfStrings = 6;
 
-                message.strings = (char**) calloc(6, sizeof(char*));
-                message.strings[0] = createStringOnHeap("Registro inserido, digite outro comando");
+                message->strings = (char**) calloc(6, sizeof(char*));
+                message->strings[0] = createStringOnHeap("Registro inserido, digite outro comando");
 
                 string = (char*) calloc(6+strlen(registro->nusp), sizeof(char));
                 strcpy(string, "NUSP: ");
-                message.strings[1] = strcat(string, registro->nusp);
+                message->strings[1] = strcat(string, registro->nusp);
 
                 string = (char*) calloc(6+strlen(registro->name), sizeof(char));
                 strcpy(string, "NOME: ");
-                message.strings[2] = strcat(string, registro->name);
+                message->strings[2] = strcat(string, registro->name);
 
 
                 string = (char*) calloc(11+strlen(registro->lastName), sizeof(char));
                 strcpy(string, "SOBRENOME: ");
                 strcat(string, registro->lastName);
-                message.strings[3] = string;
-                printf("MAIS ANTES: %s\n", message.strings[3]);
+                message->strings[3] = string;
+                printf("MAIS ANTES: %s\n", message->strings[3]);
 
                 char *bug = (char*) calloc((7+strlen(registro->course)),sizeof(char));
                 strcpy(bug, "CURSO: ");
-                printf("ANTES: %s\n", message.strings[3]);
+                printf("ANTES: %s\n", message->strings[3]);
                 printf("VER: %s\n", bug);
                 printf("MESSAGE: %s\n", registro->course);
-                message.strings[4] = strcat(bug, registro->course);
-                printf("MAIS DEPOIS AINDA: %s\n", message.strings[3]);
+                message->strings[4] = strcat(bug, registro->course);
+                printf("MAIS DEPOIS AINDA: %s\n", message->strings[3]);
 
                 string = (char*) calloc(6+strlen(registro->grade), sizeof(char));
                 strcpy(string, "NOTA: ");
-                message.strings[5] = strcat(string, registro->grade);
+                message->strings[5] = strcat(string, registro->grade);
 
                 printOnlyOneText(terminal, "Inserindo cadastro...");
-                printf("TESTE: %s\n", message.strings[1]);
-                printf("TESTE: %s\n", message.strings[2]);
-                printf("TESTE: %s\n", message.strings[3]);
-                printf("TESTE: %s\n", message.strings[4]);
-                printf("TESTE: %s\n", message.strings[5]);
+                printf("TESTE: %s\n", message->strings[1]);
+                printf("TESTE: %s\n", message->strings[2]);
+                printf("TESTE: %s\n", message->strings[3]);
+                printf("TESTE: %s\n", message->strings[4]);
+                printf("TESTE: %s\n", message->strings[5]);
                 
                 /* INTEGRAR COM O MINDUCA */
 
                 char *formattedString = formatStringToBtreePattern(registro);
                 printf("FORMATADO: %s\n", formattedString);
-                printMainText(terminal, &message);
+                printMainText(terminal, message);
                 
-                freeScreenContent(&message);
+                freeScreenContent(message);
                 freeRegister(registro);
                 break;
             case 2:
