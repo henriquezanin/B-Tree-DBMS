@@ -291,7 +291,7 @@ void runtimeInterface(struct winsize *terminal) {
                 message.numberOfStrings = 6;
 
                 message.strings = (char**) calloc(6, sizeof(char*));
-                message.strings[0] = "Registro inserido, digite outro comando";
+                message.strings[0] = createStringOnHeap("Registro inserido, digite outro comando");
 
                 string = (char*) calloc(6+strlen(registro->nusp), sizeof(char));
                 strcpy(string, "NUSP: ");
