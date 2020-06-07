@@ -308,7 +308,7 @@ void runtimeInterface(struct winsize *terminal) {
                 printf("MAIS ANTES: %s\n", message.strings[3]);
 
 
-                string = (char*) calloc((7+strlen(registro->course)),sizeof(char));
+                string = (char*) calloc(7+strlen(registro->course), sizeof(char));
                 strcpy(string, "CURSO: ");
                 printf("ANTES: %s\n", message.strings[3]);
                 printf("VER: %s\n", string);
@@ -327,10 +327,11 @@ void runtimeInterface(struct winsize *terminal) {
                 printf("TESTE: %s\n", message.strings[4]);
                 printf("TESTE: %s\n", message.strings[5]);
                 
-                /* INTEGRAR COM O MINDUCA */
-
                 char *formattedString = formatStringToBtreePattern(registro);
                 printf("FORMATADO: %s\n", formattedString);
+
+                /* INTEGRAR COM O MINDUCA selectQuery(*metadata, queryData) */
+
                 printMainText(terminal, &message);
                 
                 freeScreenContent(&message);
@@ -340,8 +341,9 @@ void runtimeInterface(struct winsize *terminal) {
                 printf("\nDigite o numero usp que deseja buscar: ");
 
                 char *nusp = readLine(stdin);
-                /* TIPO *infoUsers = FAZBUSCA(); */
                 printf("\n");
+                /* TIPO *infoUsers = FAZBUSCA(); */
+                
 
                 printOnlyOneText(terminal, "Buscando...");
 
