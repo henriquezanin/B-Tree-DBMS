@@ -297,11 +297,11 @@ void runtimeInterface(struct winsize *terminal) {
                 strcpy(comando, "search ");
                 strcat(comando, nusp);
 
+                printOnlyOneText(terminal, "Buscando...");
                 evalQuery(&metadata, comando);
                 /* TIPO *infoUsers = FAZBUSCA(); */
                 
 
-                printOnlyOneText(terminal, "Buscando...");
 
                 /* message.numberOfStrings = 6;
 
@@ -489,33 +489,20 @@ void insertFromUI(struct winsize *terminal, char *string) {
 
     string = (char*) calloc(11+strlen(registro->lastName), sizeof(char));
     strcpy(string, "SOBRENOME: ");
-    strcat(string, registro->lastName);
-    message->strings[3] = string;
-    printf("MAIS ANTES: %s\n", message->strings[3]);
+    message->strings[3] = strcat(string, registro->lastName);
 
     char *bug = (char*) calloc((7+strlen(registro->course)),sizeof(char));
     strcpy(bug, "CURSO: ");
-    printf("ANTES: %s\n", message->strings[3]);
-    printf("VER: %s\n", bug);
-    printf("MESSAGE: %s\n", registro->course);
     message->strings[4] = strcat(bug, registro->course);
-    printf("MAIS DEPOIS AINDA: %s\n", message->strings[3]);
 
     string = (char*) calloc(6+strlen(registro->grade), sizeof(char));
     strcpy(string, "NOTA: ");
     message->strings[5] = strcat(string, registro->grade);
 
     printOnlyOneText(terminal, "Inserindo cadastro...");
-    printf("TESTE: %s\n", message->strings[1]);
-    printf("TESTE: %s\n", message->strings[2]);
-    printf("TESTE: %s\n", message->strings[3]);
-    printf("TESTE: %s\n", message->strings[4]);
-    printf("TESTE: %s\n", message->strings[5]);
     
     char *formattedString = formatStringToBtreePattern(registro);
-    printf("FORMATADO: %s\n", formattedString);
     printMainText(terminal, message);
-    
     freeScreenContent(message);
     freeRegister(registro);
 }
