@@ -1,3 +1,7 @@
+/*
+Henrique Gomes Zanin NUSP: 10441321
+Gabriel Guimaraes Vilas Boas Marin NUSP: 11218521
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <utils.h>
@@ -277,6 +281,7 @@ void runtimeInterface(struct winsize *terminal) {
     Metadata *metadata = NULL;
     evalQuery(&metadata,"load alunos.table");
     char *query;
+    Errors err;
 
     while (command != 0) {
         printf("Digite o comando: ");
@@ -286,8 +291,9 @@ void runtimeInterface(struct winsize *terminal) {
         switch (command) {
             case 1:
                 query =  insertFromUI(terminal, message);
-                raiseError(evalQuery(&metadata, query));
-                printMainText(terminal, message);
+                err = evalQuery(&metadata, query);
+                if (err != KEY_ALREADY_EXISTS) printMainText(terminal, message);
+                else printMainOneText(terminal, "Ja existe um cadastro com essa chave");
                 freeScreenContent(message);
 
                 free(query);
@@ -304,44 +310,8 @@ void runtimeInterface(struct winsize *terminal) {
                 strcat(comando, nusp);
 
                 printOnlyOneText(terminal, "Buscando...");
-                raiseError(evalQuery(&metadata, comando));
-                /* TIPO *infoUsers = FAZBUSCA(); */
-                
-
-
-                /* message.numberOfStrings = 6;
-
-                message.strings = (char**) calloc(6, sizeof(char*));
-                message.strings[0] = "Busca completada, digite outro comando";
-
-                string = (char*) calloc(6+strlen(registro->nusp), sizeof(char));
-                stringAux = "NUSP: ";
-                strcpy(string, stringAux);
-                message.strings[1] = strcat(string, registro->nusp);
-
-                string = (char*) calloc(6+strlen(registro->name), sizeof(char));
-                stringAux = "NOME: ";
-                strcpy(string, stringAux);
-                message.strings[2] = strcat(string, registro->name);
-
-
-                string = (char*) calloc(11+strlen(registro->lastName), sizeof(char));
-                stringAux = "SOBRENOME: ";
-                strcpy(string, stringAux);
-                message.strings[3] = strcat(string, registro->lastName);
-
-                string = (char*) malloc((7+strlen(registro->course))*sizeof(char));
-                stringAux = "CURSO: ";
-                strcpy(string, stringAux);
-                message.strings[4] = strcat(string, registro->course);
-
-                string = (char*) calloc(6+strlen(registro->grade), sizeof(char));
-                stringAux = "NOTA: ";
-                strcpy(string, stringAux);
-                message.strings[5] = strcat(string, registro->grade);
-
-                printMainText(terminal, &message);
-                freeScreenContent(&message); */
+                err = evalQuery(&metadata, comando);
+                if (err == KEY_NOT_FOUND) printMainOneText(terminal, "Chave não encontrada");
                 free(nusp);
                 break;
             case 3:

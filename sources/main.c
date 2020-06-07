@@ -1,3 +1,7 @@
+/*
+Henrique Gomes Zanin NUSP: 10441321
+Gabriel Guimaraes Vilas Boas Marin NUSP: 11218521
+*/
 #include <string.h>
 #include <stdio.h>
 #include <utils.h>

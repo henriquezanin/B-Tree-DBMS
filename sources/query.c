@@ -1,3 +1,7 @@
+/*
+Henrique Gomes Zanin NUSP: 10441321
+Gabriel Guimaraes Vilas Boas Marin NUSP: 11218521
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,7 +42,7 @@ Errors insertQuery(Metadata *metadata, char *queryData){
     if(!metadata) return NULL_METADATA;
     Errors error;
     char *key = extractKeyFromInsertQuery(queryData);
-    if(selectQuery(metadata,key) == SUCCESS)
+    if(selectQuery(metadata,key,FALSE) == SUCCESS)
         return KEY_ALREADY_EXISTS;
     PrimaryIndex *index = storeData(metadata, queryData);
     if(!index) error = NULL_METADATA;
@@ -49,7 +53,7 @@ Errors insertQuery(Metadata *metadata, char *queryData){
     return error;
 }
 
-Errors selectQuery(Metadata *metadata, char *queryData){
+Errors selectQuery(Metadata *metadata, char *queryData, BOOL printable){ /* Se for 0 eh busca se for 1 eh consulta */
     if(!metadata) return NULL_METADATA;
     long keyRrn;
     btPage *root = getRoot(metadata->fpIndex);
@@ -58,7 +62,7 @@ Errors selectQuery(Metadata *metadata, char *queryData){
     if(keyRrn < 0){
         return KEY_NOT_FOUND;
     }
-    printByRRN(metadata, keyRrn);
+    if (printable == TRUE) printByRRN(metadata, keyRrn);
     return SUCCESS;
 }
 
@@ -93,7 +97,7 @@ Errors evalQuery(Metadata **metadata, char *fullQuery){
         err = insertQuery(*metadata, queryData);
         break;
     case search:
-        err = selectQuery(*metadata, queryData);
+        err = selectQuery(*metadata, queryData, TRUE);
         break;
     case rrn:
         printByRRN(*metadata, atol(queryData));
