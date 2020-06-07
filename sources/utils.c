@@ -126,6 +126,7 @@ Errors printMetadata(Metadata *metadata){
     int i;
     char *type = convertTypeToString(metadata->key.type);
     printf("\nKey name: %s\tKey Type:%s\n\n", metadata->key.description, type);
+    free(type);
 
     for(i=0;i<metadata->fieldCounter;i++){
         type = convertTypeToString(metadata->fields[i].type);
@@ -134,6 +135,7 @@ Errors printMetadata(Metadata *metadata){
         else
             printf("Description: %s\tType: %s[%d]\n",
             metadata->fields[i].description ,type, metadata->fields[i].lenght);
+        free(type);
     }
     printf("Register Size: %d\n\n", metadata->registerSize);
     return SUCCESS;

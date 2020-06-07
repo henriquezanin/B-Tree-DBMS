@@ -65,6 +65,7 @@ void writeTreeHeader(FILE *fp, long rootRRN){
     fseek(fp, 0l, SEEK_SET);
     fwrite(&rootRRN, sizeof(long), 1, fp);
     fwrite(freeSpace, sizeof(unsigned char), PAGESIZE-sizeof(long), fp);
+    free(freeSpace);
     fflush(fp);
 }
 

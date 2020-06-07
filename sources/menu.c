@@ -50,6 +50,7 @@ void commandLine(){
         printCommandLineMenu();
         query = readLine(stdin);
         err = evalQuery(&metadata, query);
+        free(query);
         switch (err){
         case EXIT:
             if(metadata){
@@ -80,6 +81,7 @@ void batchLoad(FILE *fp){
     while (exitFlag == FALSE){
         query = readLine(fp);
         err = evalQuery(&metadata, query);
+        free(query);
         switch (err){
         case EXIT:
             if(metadata){
