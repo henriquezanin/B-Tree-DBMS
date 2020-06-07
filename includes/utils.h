@@ -68,5 +68,6 @@ void printData(Metadata *, Data **);
 void raiseError(Errors);
 void freeMetadata(Metadata *);
 Errors printMetadata(Metadata *);
+char *createStringOnHeap(char *);
 
 #endif
