@@ -20,18 +20,16 @@ void userInterface() {
 
     screenContent mainText;
     
-    mainText.numberOfStrings = 9;
-    mainText.strings = (char**) calloc(9, sizeof(char*));
+    mainText.numberOfStrings = 7;
+    mainText.strings = (char**) calloc(7, sizeof(char*));
 
     mainText.strings[0] = "BEM VINDO AO FAST ICMCDB";
     mainText.strings[1] = "Feito por Henrique Zanin (10441321) e Gabriel Marin (11218521)";
     mainText.strings[2] = "Comandos :";
     mainText.strings[3] = "1: Inserir";
     mainText.strings[4] = "2: Buscar";
-    mainText.strings[5] = "3: Carregar tabela";
-    mainText.strings[6] = "4: Entrar com arquivo de comandos";
-    mainText.strings[7] = "5: Ver comandos disponiveis";
-    mainText.strings[8] = "0: Sair do programa";
+    mainText.strings[5] = "3: Ver comandos disponiveis";
+    mainText.strings[6] = "0: Sair do programa";
     
     printMainText(&terminal, &mainText);
     runtimeInterface(&terminal);
@@ -274,9 +272,10 @@ void printMainText(struct winsize *terminal, screenContent *content) {
 void runtimeInterface(struct winsize *terminal) {
     int command = 1;
     char *aux;
-    screenContent message;
-    message.strings = NULL;
+    screenContent *message = (screenContent*)calloc(1,sizeof(screenContent));
     char *string = NULL;
+    Metadata *metadata = NULL;
+
 
     while (command != 0) {
         aux = readLine(stdin);
@@ -288,60 +287,64 @@ void runtimeInterface(struct winsize *terminal) {
 
                 userInput *registro = readUserInput();
                 printRegister(registro);
-                message.numberOfStrings = 6;
+                message->numberOfStrings = 6;
 
-                message.strings = (char**) calloc(6, sizeof(char*));
-                message.strings[0] = createStringOnHeap("Registro inserido, digite outro comando");
+                message->strings = (char**) calloc(6, sizeof(char*));
+                message->strings[0] = createStringOnHeap("Registro inserido, digite outro comando");
 
                 string = (char*) calloc(6+strlen(registro->nusp), sizeof(char));
                 strcpy(string, "NUSP: ");
-                message.strings[1] = strcat(string, registro->nusp);
+                message->strings[1] = strcat(string, registro->nusp);
 
                 string = (char*) calloc(6+strlen(registro->name), sizeof(char));
                 strcpy(string, "NOME: ");
-                message.strings[2] = strcat(string, registro->name);
+                message->strings[2] = strcat(string, registro->name);
 
 
                 string = (char*) calloc(11+strlen(registro->lastName), sizeof(char));
                 strcpy(string, "SOBRENOME: ");
-                message.strings[3] = strcat(string, registro->lastName);
-                printf("MAIS ANTES: %s\n", message.strings[3]);
+                strcat(string, registro->lastName);
+                message->strings[3] = string;
+                printf("MAIS ANTES: %s\n", message->strings[3]);
 
-
-                string = (char*) calloc(7+strlen(registro->course), sizeof(char));
-                strcpy(string, "CURSO: ");
-                printf("ANTES: %s\n", message.strings[3]);
-                printf("VER: %s\n", string);
+                char *bug = (char*) calloc((7+strlen(registro->course)),sizeof(char));
+                strcpy(bug, "CURSO: ");
+                printf("ANTES: %s\n", message->strings[3]);
+                printf("VER: %s\n", bug);
                 printf("MESSAGE: %s\n", registro->course);
-                message.strings[4] = strcat(string, registro->course);
-                printf("MAIS DEPOIS AINDA: %s\n", message.strings[3]);
+                message->strings[4] = strcat(bug, registro->course);
+                printf("MAIS DEPOIS AINDA: %s\n", message->strings[3]);
 
                 string = (char*) calloc(6+strlen(registro->grade), sizeof(char));
                 strcpy(string, "NOTA: ");
-                message.strings[5] = strcat(string, registro->grade);
+                message->strings[5] = strcat(string, registro->grade);
 
                 printOnlyOneText(terminal, "Inserindo cadastro...");
-                printf("TESTE: %s\n", message.strings[1]);
-                printf("TESTE: %s\n", message.strings[2]);
-                printf("TESTE: %s\n", message.strings[3]);
-                printf("TESTE: %s\n", message.strings[4]);
-                printf("TESTE: %s\n", message.strings[5]);
+                printf("TESTE: %s\n", message->strings[1]);
+                printf("TESTE: %s\n", message->strings[2]);
+                printf("TESTE: %s\n", message->strings[3]);
+                printf("TESTE: %s\n", message->strings[4]);
+                printf("TESTE: %s\n", message->strings[5]);
                 
                 char *formattedString = formatStringToBtreePattern(registro);
                 printf("FORMATADO: %s\n", formattedString);
-
-                /* INTEGRAR COM O MINDUCA selectQuery(*metadata, queryData) */
-
-                printMainText(terminal, &message);
+                printMainText(terminal, message);
                 
-                freeScreenContent(&message);
+                freeScreenContent(message);
                 freeRegister(registro);
                 break;
             case 2:
+
                 printf("\nDigite o numero usp que deseja buscar: ");
 
                 char *nusp = readLine(stdin);
                 printf("\n");
+
+                char *comando = (char*) calloc(7+strlen(nusp), sizeof(char));
+                strcpy(comando, "search ");
+                strcat(comando, nusp);
+
+                evalQuery(&metadata, comando);
                 /* TIPO *infoUsers = FAZBUSCA(); */
                 
 
@@ -383,26 +386,7 @@ void runtimeInterface(struct winsize *terminal) {
                 free(nusp);
                 break;
             case 3:
-                printOnlyOneText(terminal, "Carregando arquivo...");
-
-                printf("\nDigite o nome do arquivo que deseja carregar: ");
-                string = readLine(stdin);
-                printf("\n");
-
-                /* INTEGRAR COM MINDUCA */
-
-                printMainOneText(terminal, "Arquivo carregado");
-                free(string);
-                break;
-            case 5:
                 printMainOneText(terminal, " ");
-                break;
-            case 4:
-                printOnlyOneText(terminal, "Digite o nome do arquivo com os comandos");
-                string = readLine(stdin);
-
-                printMainOneText(terminal, "Todos os arquivos foram inseridos");
-                free(string);
                 break;
             case 0:
                 printOnlyOneText(terminal, "Finalizando o programa...");
@@ -427,16 +411,14 @@ void freeScreenContent(screenContent *objectToFree) {
 void printMainOneText(struct winsize *terminal ,char *string) {
     screenContent message;
 
-    message.numberOfStrings = 7;
+    message.numberOfStrings = 5;
 
-    message.strings = (char**) calloc(7, sizeof(char*));
+    message.strings = (char**) calloc(5, sizeof(char*));
     message.strings[0] = string;
     message.strings[1] = "1: Inserir";
     message.strings[2] = "2: Buscar";
-    message.strings[3] = "3: Carregar arquivo";
-    message.strings[4] = "4: Entrar com arquivo de insercao";
-    message.strings[5] = "5: Ver comandos disponiveis";
-    message.strings[6] = "0: Sair do programa";
+    message.strings[3] = "3: Ver comandos disponiveis";
+    message.strings[4] = "0: Sair do programa";
 
     printMainText(terminal, &message);
 }
