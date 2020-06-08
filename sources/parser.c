@@ -209,6 +209,7 @@ Metadata *parseMetadata(char *filename){
     TextDocument *metadataFileLines = readFileUntilEOF(fp);
     Metadata *metadata = parseMetadataFile(metadataFileLines);
     calcRegisterSize(metadata);
+    fclose(fp);
     return metadata;
 }
 
