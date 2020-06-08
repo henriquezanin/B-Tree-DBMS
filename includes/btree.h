@@ -9,7 +9,7 @@ Gabriel Guimaraes Vilas Boas Marin NUSP: 11218521
 
 #define PAGESIZE 4096
 #define TREE_HEADER (1*PAGESIZE)
-#define MAXKEYS 200
+#define MAXKEYS 204
 #define AUX_FIELDS_SIZE_ON_PAGE (2+1) /*number of keys and "is leaf" bool*/
 #define FREE_SPACE_ON_PAGE (PAGESIZE - ((MAXKEYS*4)+(MAXKEYS*8)+((MAXKEYS+1)*8)+3))
 

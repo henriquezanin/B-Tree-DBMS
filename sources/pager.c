@@ -120,39 +120,31 @@ void printByRRN(Metadata *metadata, long rrn){
         message->strings[1] = (char*) calloc(strlen(metadata->key.description)+12, sizeof(char)); /* +12 pra caber qualquer inteiro */
         sprintf(message->strings[1], "%s: %d", metadata->key.description, data[0]->Int);
     }
-        /* printf("%s: %d\n", metadata->key.description, data[0]->Int); */
     else if(metadata->key.type == Char) {
         message->strings[1] = (char*) calloc(strlen(metadata->key.description)+strlen(data[0]->CharArray), sizeof(char));
         sprintf(message->strings[1], "%s: %s", metadata->key.description, data[0]->CharArray);
     }
-        /* printf("%s: %s\n", metadata->key.description, data[0]->CharArray); */
 
     for(i = 0; i < metadata->fieldCounter; i++){
         if(metadata->fields[i].type == Int) {
             message->strings[i+1] = (char*) calloc(strlen(metadata->fields[i].description)+12, sizeof(char));
             sprintf(message->strings[i+1], "%s: %d", metadata->fields[i].description, data[i+1]->Int);
         }
-            /* printf("%s: %d\n", metadata->fields[i].description, data[i+1]->Int); */
         else if(metadata->fields[i].type == Float) {
             message->strings[i+1] = (char*) calloc(strlen(metadata->fields[i].description)+24, sizeof(char));
             sprintf(message->strings[i+1], "%s: %.2f", metadata->fields[i].description, data[i+1]->Float);
         }
-            /* printf("%s: %.2f\n", metadata->fields[i].description, data[i+1]->Float); */
         else if(metadata->fields[i].type == Double) {
             message->strings[i+1] = (char*) calloc(strlen(metadata->fields[i].description)+24, sizeof(char));
             sprintf(message->strings[i+1], "%s: %.2f", metadata->fields[i].description, data[i+1]->Double);
         }
-            /* printf("%s: %.2lf\n", metadata->fields[i].description, data[i+1]->Double); */
         else if(metadata->fields[i].type == Char) {
             message->strings[i+1] = (char*) calloc(strlen(metadata->fields[i].description)+strlen(data[i+1]->CharArray), sizeof(char));
-            /* twoStringConcat(message->strings[i+1], metadata->fields[i].description); */
             strcpy(message->strings[i+1], metadata->fields[i].description);
             message->strings[i+1] = twoStringConcat(message->strings[i+1], ": ");
             message->strings[i+1] = twoStringConcat(message->strings[i+1], data[i+1]->CharArray);
         }
-            /* printf("%s: %s\n", metadata->fields[i].description, data[i+1]->CharArray); */
     }
-    /*  printf("\n"); */
     printMainText(&terminal, message);
     freeScreenContent(message);
 }

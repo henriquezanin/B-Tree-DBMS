@@ -12,21 +12,19 @@ Gabriel Guimaraes Vilas Boas Marin NUSP: 11218521
 TextDocument *readFileUntilEOF(FILE *fp){
     TextDocument *document = (TextDocument*)calloc(1,sizeof(TextDocument));
     int size = 0;
-
     while(!feof(fp)){
         document->text = (char**)realloc(document->text,(size+1)*sizeof(char*));
         document->text[size++] = readLine(fp);
     }
     document->numberOfLines = size;
-
     return document;
 }
 
+/*Get parameter from query*/
 char *extractParameter(char *string, char parameterSep){
     char *parameter;
     int stringLenght = strlen(string);
     int subStringSize = 0;
-    
     while(string[subStringSize] != parameterSep && subStringSize < stringLenght && ++subStringSize);
     parameter = (char*)calloc(subStringSize+1, sizeof(char));
     strncpy(parameter, string, subStringSize);
@@ -36,7 +34,6 @@ char *extractParameter(char *string, char parameterSep){
 char *removeSpaces(char *string){
     int i = 0,newSize = 0;
     char *aux = (char*)calloc(strlen(string),sizeof(char));
-
     for(i=0;i<strlen(string);i++){
         if(string[i] != SPACE && string[i] != STRING_DELIMITER)
             aux[newSize++] = string[i];
@@ -52,7 +49,7 @@ char *removeSpaces(char *string){
     free(aux);
     return string;
 }
-
+/*Get parameter value from query and remove spaces*/
 char *extractParameterValue(char *string, char parameterSep){
     char *value, *startOfSubstring;
     int stringLenght = strlen(string);
@@ -89,6 +86,7 @@ void raiseErrorAndExit(char *error){
     exit(0);
 }
 
+/*Return an enum with data type*/
 enum ParameterType getParameterType(char *parameter){
     enum ParameterType type;
     if(strstr(parameter,"name")) type = Name;
@@ -102,7 +100,7 @@ enum ParameterType getParameterType(char *parameter){
     }
     return type;
 }
-
+/*Load primary key fields into metadata TAD*/
 void loadKeyIntoMetadata(Metadata *metadata, char *fullParameter){
     char *parameter = extractParameter(fullParameter, METADATA_PARAMETER_SEP);
     char *parameterValue = extractParameterValue(fullParameter, METADATA_PARAMETER_SEP);
@@ -114,11 +112,10 @@ void loadKeyIntoMetadata(Metadata *metadata, char *fullParameter){
     metadata->key.lenght = 1;
 }
 
-
+/*Get char size defined in metadata file knowed as table file*/
 unsigned int getCharTypeSize(char *parameterValue){
     unsigned int size = 1, i = 0;
     char *p, digit[8];
-
     while(parameterValue[i++] != '[' && i < strlen(parameterValue));
     if(i >= strlen(parameterValue)) return 1;
     p = &parameterValue[i];
@@ -127,7 +124,6 @@ unsigned int getCharTypeSize(char *parameterValue){
     strncpy(digit,p,--i);
     digit[i] = '\0';
     size = atoi(digit);
-
     return size;
 }
 
