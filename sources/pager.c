@@ -114,7 +114,7 @@ void printByRRN(Metadata *metadata, long rrn){
 
     message->numberOfStrings = 1+metadata->fieldCounter;
     message->strings = (char**) calloc(message->numberOfStrings, sizeof(char*));
-    message->strings[0] = createStringOnHeap("Busca feita com sucesso");
+    message->strings[0] = createStringOnHeap("Busca feita com sucesso, digite 3 para ver os comandos");
     
     if(metadata->key.type == Int) {
         message->strings[1] = (char*) calloc(strlen(metadata->key.description)+12, sizeof(char)); /* +12 pra caber qualquer inteiro */
@@ -131,7 +131,7 @@ void printByRRN(Metadata *metadata, long rrn){
             sprintf(message->strings[i+1], "%s: %d", metadata->fields[i].description, data[i+1]->Int);
         }
         else if(metadata->fields[i].type == Float) {
-            message->strings[i+1] = (char*) calloc(strlen(metadata->fields[i].description)+24, sizeof(char));
+            message->strings[i+1] = (char*) calloc(strlen(metadata->fields[i].description)+24, sizeof(char)); /* +24 pra caber qualquer Float/Double */
             sprintf(message->strings[i+1], "%s: %.2f", metadata->fields[i].description, data[i+1]->Float);
         }
         else if(metadata->fields[i].type == Double) {

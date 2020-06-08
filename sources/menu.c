@@ -24,6 +24,7 @@ void userInterface() {
 
     screenContent mainText;
     
+    /* Setando strings para a função printMainText */
     mainText.numberOfStrings = 7;
     mainText.strings = (char**) calloc(7, sizeof(char*));
 
@@ -52,7 +53,6 @@ void commandLine(){
         printCommandLineMenu();
         query = readLine(stdin);
         err = evalQuery(&metadata, query);
-        free(query);
         switch (err){
         case EXIT:
             if(metadata){
@@ -83,7 +83,6 @@ void batchLoad(FILE *fp){
     while (exitFlag == FALSE){
         query = readLine(fp);
         err = evalQuery(&metadata, query);
-        free(query);
         switch (err){
         case EXIT:
             if(metadata){
@@ -122,10 +121,10 @@ void runManuals(char *command) {
 
     if(!strcmp(command, "insert")) {
         
-        manInfo.name =  "insert -- insert a person in the DBMS";
+        manInfo.name =  "insert -- Register data in the DBMS";
         manInfo.synopsis = "insert [integer,\"string\",integer,float]";
         manInfo.description = "For each operand that insert a person in this DBMS, you register it on a file with a index made with paged b-tree increasing it speed for big storage of data";
-        manInfo.exampleHeader = "The following is how to insert an person by user input";
+        manInfo.exampleHeader = "The following is how to insert data by user input";
         manInfo.exampleText = "insert 1,\"gabriel\",20,300.00";
         manInfo.history = "An insert command appeared in Version 1";
 
@@ -135,8 +134,8 @@ void runManuals(char *command) {
 
         manInfo.name = "search -- search a person in the DBMS";
         manInfo.synopsis = "search [integer]";
-        manInfo.description = "For each operand, this command searches a person that is registered on the DBMS printing all the data saved";
-        manInfo.exampleHeader = "The following is how to search an person by user input";
+        manInfo.description = "For each operand, this command searches data that is registered on the DBMS printing all the data saved";
+        manInfo.exampleHeader = "The following is how to search data by user input";
         manInfo.exampleText = "search 1";
         manInfo.history = "An search command appeared in Version 1";
 
@@ -198,7 +197,7 @@ void runManuals(char *command) {
         printMan(&manInfo, &terminal);
 
     } else{
-        printf("INVALID COMMAND\n");
+        printf("Invalid query!\n");
     }
 }
 
@@ -279,7 +278,7 @@ void printMainText(struct winsize *terminal, screenContent *content) {
 void runtimeInterface(struct winsize *terminal) {
     int command = 1;
     char *aux;
-    screenContent *message = (screenContent*)calloc(1,sizeof(screenContent));
+    screenContent *message = (screenContent*)calloc(1,sizeof(screenContent)); /* Struct para setar textos e printar no bloco do temrinal */
     char *string = NULL;
     Metadata *metadata = NULL;
     evalQuery(&metadata,"load alunos.table");
@@ -309,7 +308,7 @@ void runtimeInterface(struct winsize *terminal) {
                 printf("\n");
 
                 char *comando = (char*) calloc(7+strlen(nusp), sizeof(char));
-                strcpy(comando, "search ");
+                strcpy(comando, "search "); /* Concatenando string para montar query pro bd */
                 strcat(comando, nusp);
 
                 printOnlyOneText(terminal, "Buscando...");
@@ -340,12 +339,14 @@ void runtimeInterface(struct winsize *terminal) {
     
 }
 
+/* Da free nos textos da tela */
 void freeScreenContent(screenContent *objectToFree) {
     if (objectToFree->strings) {
         free(objectToFree->strings);
     }
 }
 
+/* Printa uma unica linha, com os comandos em baixo */
 void printMainOneText(struct winsize *terminal ,char *string) {
     screenContent message;
 
@@ -361,6 +362,7 @@ void printMainOneText(struct winsize *terminal ,char *string) {
     printMainText(terminal, &message);
 }
 
+/* Printa o bloco do terminal somente com uma linha com texto */
 void printOnlyOneText(struct winsize *terminal ,char *string) {
     screenContent message;
 
@@ -372,6 +374,7 @@ void printOnlyOneText(struct winsize *terminal ,char *string) {
     printMainText(terminal, &message);
 }
 
+/* Le as entradas para o registro do aluno */
 userInput* readUserInput() {
     userInput *cadastro = (userInput*) calloc(1, sizeof(userInput));
 
@@ -395,6 +398,7 @@ userInput* readUserInput() {
     return cadastro;
 }
 
+/* Formata os textos para o padrão de inserção do bd */
 char* formatStringToBtreePattern(userInput *cadastro) {
     int holeSize = strlen(cadastro->name) + strlen(cadastro->nusp) + strlen(cadastro->lastName) + strlen(cadastro->grade) + strlen(cadastro->course);
     char *aspas = "\"";
@@ -420,10 +424,7 @@ char* formatStringToBtreePattern(userInput *cadastro) {
     return resultString;
 }
 
-void freeAll() {
-
-}
-
+/* Free no conteudo do cadastro */
 void freeRegister(userInput *var) {
 
     free(var->name);
@@ -435,6 +436,8 @@ void freeRegister(userInput *var) {
 
 }
 
+
+/* Printa o conteudo do registro, usado para debugar */
 void printRegister(userInput *user) {
 
     printf("NAME: %s\n", user->name);
@@ -445,6 +448,7 @@ void printRegister(userInput *user) {
 
 }
 
+/* Le os dados que o usuário da entrada e retorna a query */
 char* insertFromUI(struct winsize *terminal, screenContent *message) {
     printOnlyOneText(terminal, "Digite as informacoes necessarias");
 

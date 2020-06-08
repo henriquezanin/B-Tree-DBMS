@@ -52,7 +52,6 @@ void printOnlyOneText(struct winsize*, char*);
 void printRegister(userInput*);
 userInput* readUserInput();
 char* formatStringToBtreePattern(userInput*);
-void freeAll();
 void freeRegister(userInput*);
 char* twoStringConcat(char*, char*);
 
