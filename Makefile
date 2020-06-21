@@ -14,5 +14,5 @@ run:
 	@bin/main
 
 clean:
-	@rm bin/index.dat
-	@rm bin/dados.reg
+	@rm bin/*.idx
+	@rm bin/*.reg

@@ -311,3 +311,12 @@ char *extractKeyFromInsertQuery(char *queryData){
     strncpy(digit,queryData,size);
     return digit;
 }
+
+char *generateIndexNameFromRegisterName(char *regFilename){
+    char *dotOcurrence = strchr(regFilename, '.');
+    int filenameSize = dotOcurrence - regFilename;
+    char *indexFilename = (char *)calloc(filenameSize+5, sizeof(char));
+    strncat(indexFilename,regFilename,filenameSize);
+    strcat(indexFilename,".idx");
+    return indexFilename;
+}

@@ -23,4 +23,5 @@ char *extractParameter(char *, char);
 char *extractParameterValue(char *, char);
 Data **parseInsertQueryData(Metadata *, char *);
 char *extractKeyFromInsertQuery(char *);
+char *generateIndexNameFromRegisterName(char *);
 #endif

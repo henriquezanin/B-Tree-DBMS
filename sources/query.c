@@ -76,7 +76,7 @@ Errors loadTable(char *filename, Metadata **metadata){
     }
     *metadata = parseMetadata(filename);
     (*metadata)->fpRegister = openOrCreateFile((*metadata)->registerFilename);
-    (*metadata)->fpIndex = openOrCreateFile("index.dat");
+    (*metadata)->fpIndex = openOrCreateFile(generateIndexNameFromRegisterName((*metadata)->registerFilename));
     return SUCCESS;
 }
 
