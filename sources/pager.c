@@ -114,7 +114,7 @@ void printByRRN(Metadata *metadata, long rrn){
 
     message->numberOfStrings = 1+metadata->fieldCounter;
     message->strings = (char**) calloc(message->numberOfStrings, sizeof(char*));
-    message->strings[0] = createStringOnHeap("Busca feita com sucesso, digite 3 para ver os comandos");
+    message->strings[0] = createStringOnHeap("Busca feita com sucesso");
     
     if(metadata->key.type == Int) {
         message->strings[1] = (char*) calloc(strlen(metadata->key.description)+12, sizeof(char)); /* +12 pra caber qualquer inteiro */
