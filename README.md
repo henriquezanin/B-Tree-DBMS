@@ -8,17 +8,24 @@ Para compilar o trabalho execute no diretório onde está o Makefile:
     $ make
 
 Será gerado um arquivo binário com o nome "main" no diretório bin/. Para executa-lo:
+
     $ ./main
+
  ou
+
     $ ./main --cmd
+
  ou
+
     $./main --batch
 
 A explicação das variações podem ser encontradas no PDF. Não é necessário carregar
 a tabela para o primeiro comando, apenas para os demais.
 
 Para gerar 10 casos de teste execute no diretório tests:
+    
     $ make
+
     $ ./main 10 > caso.in
 
 O número de inserções pode ser modificado para qualquer valor desejado. 
