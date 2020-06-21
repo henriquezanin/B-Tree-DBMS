@@ -257,8 +257,7 @@ char *removeQuotesInString(char *string){
 Data *convertStringToData(char *field, enum dataType type, int size){
     Data *data = (Data*)malloc(sizeof(Data));
     char *aux;
-    switch (type)
-    {
+    switch (type){
     case Int:
         data->Int = atoi(field);
         break;

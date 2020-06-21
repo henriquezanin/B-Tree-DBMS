@@ -286,7 +286,7 @@ void runtimeInterface(struct winsize *terminal) {
     Errors err;
 
     while (command != 0) {
-        printf("Digite o comando: ");
+        printf("Insira o comando ou digite 3: ");
         aux = readLine(stdin);
         command = atoi(aux);
         free(aux);
